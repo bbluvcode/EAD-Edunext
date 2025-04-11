@@ -1,27 +1,10 @@
-/EAD-war/dist/
+# Thư mục dist và build
 /EAD-ejb/dist/
-##############################
-## Java hellom
-##############################
-.mtj.tmp/
-*.class
+/EAD-war/dist/
+/build/
+/dist/
+
+# Bỏ các file binary
 *.jar
 *.war
-*.ear
-*.nar
-hs_err_pid*
-
-##############################
-## Maven
-##############################
-target/
-pom.xml.tag
-pom.xml.releaseBackup
-pom.xml.versionsBackup
-pom.xml.next
-pom.xml.bak
-release.properties
-dependency-reduced-pom.xml
-buildNumber.properties
-.mvn/timing.properties
-.mvn/wrapper/maven-wrapper.jar
+*.dpf
