@@ -1,15 +1,12 @@
-/EAD-war/dist/
+# Build artifacts
+/build/
+/dist/
 /EAD-ejb/dist/
-##############################
-## Java hellom
-##############################
-.mtj.tmp/
-*.class
+/EAD-war/dist/
 *.jar
 *.war
 *.ear
-*.nar
-hs_err_pid*
+*.dpf
 
 ##############################
 ## Maven
