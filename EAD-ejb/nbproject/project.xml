@@ -12,6 +12,8 @@
             <included-library dirs="200">file.reference.mssql-jdbc-11.2.3.jre17.jar</included-library>
             <included-library dirs="200">file.reference.hibernate-validator-5.0.1.Final.jar</included-library>
             <included-library dirs="200">file.reference.jakarta.validation-api-3.0.1.jar</included-library>
+            <included-library dirs="200">file.reference.jakarta.activation-2.0.1.jar</included-library>
+            <included-library dirs="200">file.reference.jakarta.mail-2.0.1.jar</included-library>
             <source-roots>
                 <root id="src.dir" name="Source Packages"/>
             </source-roots>
