@@ -1,10 +1,12 @@
-# Thư mục dist và build
-/EAD-ejb/dist/
-/EAD-war/dist/
+# Build artifacts
 /build/
 /dist/
-
-# Bỏ các file binary
+/EAD-ejb/dist/
+/EAD-war/dist/
 *.jar
 *.war
+*.ear
 *.dpf
+
+# IDE configs (NetBeans)
+nbproject/private/
