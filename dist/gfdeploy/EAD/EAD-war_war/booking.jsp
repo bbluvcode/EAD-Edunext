@@ -7,94 +7,70 @@
         <title>Đặt lịch khám</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
         <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
-        <style>
-            body {
-                background-color: #f8f9fa;
-            }
-            .section-header {
-                font-weight: bold;
-                margin-top: 15px;
-            }
-            #datepicker {
-                width: 100%;
-            }
-            .time-slot {
-                padding: 10px;
-                border: 1px solid #007bff;
-                border-radius: 5px;
-                text-align: center;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                background-color: #28a745;
-                color: white;
-            }
-
-            .time-slot.booked {
-                background-color: #dc3545 !important;
-                pointer-events: none;
-            }
-
-            .time-slot.active {
-                background-color: orange !important;
-                color: white;
-            }
-        </style>
+        <link rel="stylesheet" type="text/css" href="css/bookingcss.css">
     </head>
     <body>
         <div class="container py-5">
-            <form action="BookAppointmentServlet" method="post">
+            <form action="AppointmentServlet" method="post">
                 <div class="row g-4">
                     <div class="col-md-6">
                         <div class="p-4 bg-white rounded shadow">
-                            <h2 class="text-success text-center">👤 Thông tin bệnh nhân</h2>
+                            <h3 class="text-success text-center">👤 Thông tin bệnh nhân</h3>
                             <hr>
                             <table class="table table-bordered">
                                 <tbody>
                                     <tr>
                                         <th scope="row" class="col-4">Họ và tên</th>
-                                        <td class="col-8">Nguyễn Văn A</td>
+                                        <td class="col-8">${p.fullName}</td>
                                     </tr>
                                     <tr>
                                         <th scope="row" class="col-4">Giới tính</th>
-                                        <td class="col-8">Nam</td>
+                                        <td class="col-8">${p.gender}</td>
                                     </tr>
                                     <tr>
                                         <th scope="row" class="col-4">Ngày sinh</th>
-                                        <td class="col-8">1990-01-01</td>
+                                        <td class="col-8">${p.formatDOB()}</td>
                                     </tr>
                                     <tr>
                                         <th scope="row" class="col-4">Số điện thoại</th>
-                                        <td class="col-8">0901234567</td>
+                                        <td class="col-8">${p.phone}</td>
                                     </tr>
                                     <tr>
                                         <th scope="row" class="col-4">Địa chỉ</th>
-                                        <td class="col-8">123 Nguyễn Trãi, Hà Nội</td>
+                                        <td class="col-8">${p.address}</td>
                                     </tr>
                                     <tr>
                                         <th scope="row" class="col-4">Email</th>
-                                        <td class="col-8">nguyenvana@gmail.com</td>
+                                        <td class="col-8">${p.email}</td>
                                     </tr>
                                 </tbody>
                             </table>
                             <br>
                             <hr>
+                            <br>
                             <div class="mb-3 row align-items-center">
+                                <c:if test="${not empty errDepart}">
+                                    <p class="text-center text-danger">${errDepart}</p>
+                                </c:if>
                                 <label for="department" class="col-sm-4 col-form-label fs-5">Ngành khám</label>
                                 <div class="col-sm-8">
-                                    <select name="department" id="department" class="form-select" required onchange="loadDoctorsByDepartment()">
+                                    <select name="department" id="department" class="form-select" onchange="loadDoctorsByDepartment()">
                                         <option value="">-- Chọn ngành khám --</option>
-                                        <option value="Noi tong quat">Nội tổng quát</option>
-                                        <option value="Nhi khoa">Nhi khoa</option>
-                                        <option value="Da lieu">Da liễu</option>
-                                        <option value="Mat">Mắt</option>
+                                        <option value="Noi tong quat" ${department == 'Noi tong quat' ? 'selected' : ''}>Nội tổng quát</option>
+                                        <option value="Nhi khoa" ${department == 'Nhi khoa' ? 'selected' : ''}>Nhi khoa</option>
+                                        <option value="Da lieu" ${department == 'Da lieu' ? 'selected' : ''}>Da liễu</option>
+                                        <option value="Mat" ${department == 'Mat' ? 'selected' : ''}>Mắt</option>
                                     </select>
                                 </div>
                             </div>
 
                             <div class="mb-3 row align-items-center">
+                                <c:if test="${not empty errDoctor}">
+                                    <p class="text-center text-danger">${errDoctor}</p>
+                                </c:if>
                                 <label for="doctor" class="col-sm-4 col-form-label fs-5">Bác sĩ</label>
                                 <div class="col-sm-8">
-                                    <select name="doctorId" id="doctor" class="form-select" required onchange="updateTimeSlotColors()">
+                                    <select name="doctorId" id="doctor" class="form-select" onchange="updateTimeSlotColors()">
                                         <option value="">-- Chọn bác sĩ --</option>
                                     </select>
                                 </div>
@@ -103,11 +79,11 @@
                             <div class="mb-3 row">
                                 <label for="notes" class="col-sm-4 col-form-label fs-5">Ghi chú / Triệu chứng</label>
                                 <div class="col-sm-8">
-                                    <textarea name="notes" id="notes" class="form-control" rows="3" placeholder="Nhập triệu chứng hoặc ghi chú..."></textarea>
+                                    <textarea name="notes" id="notes" class="form-control" rows="2" placeholder="Nhập triệu chứng hoặc ghi chú..."></textarea>
                                 </div>
                             </div>
 
-
+                            <input type="hidden" name="patientId" id="patientId" value="${p.patientID}">
                             <input type="hidden" name="selectedTime" id="selectedTimeInput">
                             <input type="hidden" name="selectedDate" id="selectedDateInput">
 
@@ -117,10 +93,16 @@
                     <div class="col-md-6">
                         <div class="p-4 bg-white rounded shadow mb-4">
                             <label for="datepicker" class="form-label" id="selectedDateLabel">Chọn ngày khám:</label>
+                            <c:if test="${not empty errDate}">
+                                <p class="text-center text-danger">${errDate}</p>
+                            </c:if>
                             <input type="text" id="datepicker" class="form-control" placeholder="Pick a date">
                         </div>
 
                         <div class="p-4 bg-white rounded shadow" id="timeSlots">
+                            <c:if test="${not empty errTime}">
+                                <p class="text-center text-danger">${errTime}</p>
+                            </c:if>
                             <h5 class="section-header">Sáng</h5>
                             <div class="row row-cols-3">
                                 <div class="col mb-2"><div class="time-slot">08:00</div></div>
@@ -146,7 +128,25 @@
                                 <div class="col mb-2"><div class="time-slot">16:00</div></div>
                                 <div class="col mb-2"><div class="time-slot">16:30</div></div>
                             </div>
-                            <button type="submit" class="btn btn-primary w-100 mt-3">Đặt lịch khám</button>
+                            <button type="submit" name="action" value="Booking" class="mt-2">
+                                <div class="svg-wrapper-1">
+                                    <div class="svg-wrapper">
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 24 24"
+                                            width="24"
+                                            height="24"
+                                            >
+                                        <path fill="none" d="M0 0h24v24H0z"></path>
+                                        <path
+                                            fill="currentColor"
+                                            d="M1.946 9.315c-.522-.174-.527-.455.01-.634l19.087-6.362c.529-.176.832.12.684.638l-5.454 19.086c-.15.529-.455.547-.679.045L12 14l6-8-8 6-8.054-2.685z"
+                                            ></path>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <span class="text-center">Đặt lịch hẹn</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -188,7 +188,7 @@
                                                             doctorSelect.innerHTML += data;
                                                         })
                                                         .catch(error => {
-                                                            console.error("Lỗi khi load danh sách bác sĩ:", error);
+                                                            console.error("Error:", error);
                                                         });
                                             }
                                         }
