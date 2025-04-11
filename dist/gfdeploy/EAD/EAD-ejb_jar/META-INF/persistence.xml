@@ -3,12 +3,13 @@
     <persistence-unit name="EADEdunext" transaction-type="RESOURCE_LOCAL">
         <jta-data-source>JNDIEAD</jta-data-source>
         <class>entities.Appointments</class>
-        <class>entities.Doctors</class>
-        <class>entities.Patients</class>
         <class>entities.Bills</class>
+        <class>entities.Doctors</class>
         <class>entities.MedicalRecords</class>
         <class>entities.Medicines</class>
+        <class>entities.Patients</class>
         <class>entities.Prescriptions</class>
+<!--        <exclude-unlisted-classes>false</exclude-unlisted-classes>-->
         <properties>
             <property name="jakarta.persistence.jdbc.driver" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
             <property name="jakarta.persistence.jdbc.url" value="jdbc:sqlserver://localhost:1433;databaseName=Sem4DB;TrustServerCertificate=true"/>

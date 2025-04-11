@@ -17,9 +17,11 @@ import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import jakarta.persistence.Transient;
 import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -34,7 +36,12 @@ import java.util.Date;
     @NamedQuery(name = "Bills.findByAmount", query = "SELECT b FROM Bills b WHERE b.amount = :amount"),
     @NamedQuery(name = "Bills.findByPaymentDate", query = "SELECT b FROM Bills b WHERE b.paymentDate = :paymentDate"),
     @NamedQuery(name = "Bills.findByPaymentMethod", query = "SELECT b FROM Bills b WHERE b.paymentMethod = :paymentMethod"),
-    @NamedQuery(name = "Bills.findByStatus", query = "SELECT b FROM Bills b WHERE b.status = :status")})
+    @NamedQuery(name = "Bills.findByStatus", query = "SELECT b FROM Bills b WHERE b.status = :status"),
+    @NamedQuery(
+            name = "Bills.findByPatientId",
+            query = "SELECT b FROM Bills b WHERE b.appointmentID.patientID.patientID = :id"
+    )
+})
 public class Bills implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -60,6 +67,10 @@ public class Bills implements Serializable {
     private Appointments appointmentID;
 
     public Bills() {
+    }
+
+    public Integer getBillID() {
+        return billID;
     }
 
     public void setBillID(Integer billID) {
@@ -106,4 +117,9 @@ public class Bills implements Serializable {
         this.appointmentID = appointmentID;
     }
 
+    @Transient
+    public String formatDate() {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        return sdf.format(paymentDate);
+    }
 }

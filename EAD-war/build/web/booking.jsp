@@ -7,53 +7,7 @@
         <title>Đặt lịch khám</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
         <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
-        <style>
-            body {
-                background-color: #f8f9fa;
-            }
-            .section-header {
-                font-weight: bold;
-                margin-top: 15px;
-            }
-            #datepicker {
-                width: 100%;
-            }
-            .time-slot {
-                padding: 10px;
-                border: 1px solid #007bff;
-                border-radius: 5px;
-                text-align: center;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                background-color: #28a745;
-                color: white;
-            }
-
-            .time-slot.booked {
-                background-color: #dc3545 !important;
-                pointer-events: none;
-            }
-
-            .time-slot.active {
-                background-color: orange !important;
-                color: white;
-            }
-            .time-slot.booked {
-                background-color: #dc3545 !important;
-                cursor: not-allowed !important;
-                opacity: 0.7;
-                position: relative;
-            }
-
-            .time-slot.booked::after {
-                content: "⛔";
-                position: absolute;
-                top: 5px;
-                right: 5px;
-                font-size: 16px;
-            }
-
-        </style>
+        <link rel="stylesheet" type="text/css" href="css/bookingcss.css">
     </head>
     <body>
         <div class="container py-5">
@@ -61,7 +15,7 @@
                 <div class="row g-4">
                     <div class="col-md-6">
                         <div class="p-4 bg-white rounded shadow">
-                            <h2 class="text-success text-center">👤 Thông tin bệnh nhân</h2>
+                            <h3 class="text-success text-center">👤 Thông tin bệnh nhân</h3>
                             <hr>
                             <table class="table table-bordered">
                                 <tbody>
@@ -93,6 +47,7 @@
                             </table>
                             <br>
                             <hr>
+                            <br>
                             <div class="mb-3 row align-items-center">
                                 <c:if test="${not empty errDepart}">
                                     <p class="text-center text-danger">${errDepart}</p>
@@ -124,7 +79,7 @@
                             <div class="mb-3 row">
                                 <label for="notes" class="col-sm-4 col-form-label fs-5">Ghi chú / Triệu chứng</label>
                                 <div class="col-sm-8">
-                                    <textarea name="notes" id="notes" class="form-control" rows="3" placeholder="Nhập triệu chứng hoặc ghi chú..."></textarea>
+                                    <textarea name="notes" id="notes" class="form-control" rows="2" placeholder="Nhập triệu chứng hoặc ghi chú..."></textarea>
                                 </div>
                             </div>
 
@@ -173,7 +128,25 @@
                                 <div class="col mb-2"><div class="time-slot">16:00</div></div>
                                 <div class="col mb-2"><div class="time-slot">16:30</div></div>
                             </div>
-                            <button type="submit" class="btn btn-primary w-100 mt-3" name="action" value="Booking">Đặt lịch khám</button>
+                            <button type="submit" name="action" value="Booking" class="mt-2">
+                                <div class="svg-wrapper-1">
+                                    <div class="svg-wrapper">
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 24 24"
+                                            width="24"
+                                            height="24"
+                                            >
+                                        <path fill="none" d="M0 0h24v24H0z"></path>
+                                        <path
+                                            fill="currentColor"
+                                            d="M1.946 9.315c-.522-.174-.527-.455.01-.634l19.087-6.362c.529-.176.832.12.684.638l-5.454 19.086c-.15.529-.455.547-.679.045L12 14l6-8-8 6-8.054-2.685z"
+                                            ></path>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <span class="text-center">Đặt lịch hẹn</span>
+                            </button>
                         </div>
                     </div>
                 </div>
