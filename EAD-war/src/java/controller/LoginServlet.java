@@ -48,6 +48,59 @@ public class LoginServlet extends HttpServlet {
                             request.getRequestDispatcher("login.jsp").forward(request, response);
                         }
                         break;
+
+                    case "SendOTP":
+                        String emailToSend = request.getParameter("email");
+                        String generatedOtp = String.valueOf((int) (Math.random() * 900000) + 100000); // 6 chữ số
+
+                        if (sb.sendOtp(emailToSend, generatedOtp)) {
+                            request.getSession().setAttribute("otpEmail", emailToSend); // lưu lại để so OTP và reset pass
+                            request.getSession().setAttribute("otpCode", generatedOtp); // lưu mã OTP
+                            request.setAttribute("message", "OTP has been sent to your email.");
+                        } else {
+                            request.setAttribute("error", "Email not found.");
+                        }
+
+                        request.getRequestDispatcher("login.jsp").forward(request, response);
+                        break;
+
+                    case "VerifyOTP":
+                        String enteredOtp = request.getParameter("otp");
+                        String sessionOtp = (String) request.getSession().getAttribute("otpCode");
+
+                        if (enteredOtp != null && enteredOtp.equals(sessionOtp)) {
+                            request.getRequestDispatcher("resetPassword.jsp").forward(request, response);
+                        } else {
+                            request.setAttribute("error", "Invalid OTP.");
+                            request.getRequestDispatcher("login.jsp").forward(request, response);
+                        }
+                        break;
+
+                    case "ResetPassword":
+                        String newPass = request.getParameter("newPassword");
+                        String confirmPass = request.getParameter("confirmPassword");
+                        String emailToReset = (String) request.getSession().getAttribute("otpEmail");
+
+                        if (emailToReset == null) {
+                            request.setAttribute("error", "Session expired. Please try again.");
+                            request.getRequestDispatcher("login.jsp").forward(request, response);
+                            return;
+                        }
+
+                        if (!newPass.equals(confirmPass)) {
+                            request.setAttribute("error", "Passwords do not match.");
+                            request.getRequestDispatcher("resetPassword.jsp").forward(request, response);
+                            return;
+                        }
+
+                        if (sb.updatePassword(emailToReset, newPass)) {
+                            request.setAttribute("message", "Password updated. Please login.");
+                            request.getRequestDispatcher("login.jsp").forward(request, response);
+                        } else {
+                            request.setAttribute("error", "Failed to update password.");
+                            request.getRequestDispatcher("resetPassword.jsp").forward(request, response);
+                        }
+                        break;
                     default:
                         throw new AssertionError();
                 }

@@ -41,6 +41,6 @@
         <url-pattern>/LoginServlet</url-pattern>
     </servlet-mapping>
     <welcome-file-list>
-        <welcome-file>AppointmentServlet</welcome-file>
+        <welcome-file>LoginServlet</welcome-file>
     </welcome-file-list>
 </web-app>

@@ -5,7 +5,9 @@
         <group>
             <file>file:/D:/2308A0/HK4/EAD-Edunext/EAD-war/web/login.jsp</file>
             <file>file:/D:/2308A0/HK4/EAD-Edunext/EAD-war/web/css/logincss.css</file>
-            <file>file:/D:/2308A0/HK4/EAD-Edunext/EAD-war/web/booking.jsp</file>
+            <file>file:/D:/2308A0/HK4/EAD-Edunext/EAD-war/web/resetPassword.jsp</file>
+            <file>file:/D:/2308A0/HK4/EAD-Edunext/EAD-war/src/java/controller/LoginServlet.java</file>
+            <file>file:/D:/2308A0/HK4/EAD-Edunext/EAD-war/web/WEB-INF/web.xml</file>
         </group>
     </open-files>
 </project-private>

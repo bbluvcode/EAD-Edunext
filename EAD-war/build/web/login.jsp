@@ -17,19 +17,34 @@
                     <input type="password" name="password" placeholder="Password" required>
                     <button class="auth-btn" type="submit">Login</button>
                     <% if (request.getAttribute("error") != null) {%>
-                    <p style="color:red;"><%= request.getAttribute("error")%></p>
+                    <p style="color:red;text-align:center"><%= request.getAttribute("error")%></p>
+                    <% } else if (request.getAttribute("message") != null) {%>
+                    <p style="color:green;text-align:center"><%= request.getAttribute("message")%></p>
                     <% }%>
                 </form>
             </div>
 
             <div class="auth-forgot-panel">
-                <form>
+                <form action="LoginServlet" method="post">
                     <label for="toggle-forgot" aria-hidden="true">Forgot Password</label>
-                    <input type="email" name="forgot-email" placeholder="Email" required>
-                    <input type="password" name="new-password" placeholder="New Password" required>
-                    <button class="auth-btn">Submit</button>
+
+                    <div class="auth-input-group">
+                        <input type="email" name="email" placeholder="Enter your email">
+                        <button type="submit" name="action" value="SendOTP">Send OTP</button>
+                    </div>
+
+                    <input type="text" name="otp" class="auth-input-wide" placeholder="Enter OTP">
+                    <button type="submit" name="action" value="VerifyOTP" class="auth-btn">Submit OTP</button>
+
+                    <% if (request.getAttribute("error") != null) {%>
+                    <p style="color:red;text-align:center"><%= request.getAttribute("error")%></p>
+                    <% } else if (request.getAttribute("message") != null) {%>
+                    <p style="color:green;text-align:center"><%= request.getAttribute("message")%></p>
+                    <% }%>
                 </form>
+
             </div>
+
         </div>
     </body>
 </html>
