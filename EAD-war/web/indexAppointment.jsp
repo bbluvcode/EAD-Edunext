@@ -20,7 +20,7 @@
                     <a href="AppointmentServlet?action=GetPatient" class="btn btn-success">Create Appointment</a>
                 </div>
             </div>
-            <h2 class="text-center">List of Appointments 2</h2>
+            <h2 class="text-center">List of Appointments</h2>
             <table class="table table-bordered align-middle text-center">
                 <thead class="table-dark">
                     <tr>                      
