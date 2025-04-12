@@ -1,13 +1,14 @@
 # Build artifacts
 /build/
-/dist/
-/EAD-ejb/dist/
-/EAD-war/dist/
+dist/
+EAD-ejb/dist/
+EAD-war/dist/
 *.jar
 *.war
 *.ear
 *.dpf
 
+<<<<<<< HEAD
 ##############################
 ## Maven
 ##############################
@@ -24,3 +25,10 @@ buildNumber.properties
 .mvn/wrapper/maven-wrapper.jar
 
 **/build/lib/
+=======
+# IDE configs (NetBeans)
+**/nbproject/private/
+
+# Library JARs
+lib/*.jar
+>>>>>>> dev
