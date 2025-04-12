@@ -1,0 +1,18 @@
+<component name="libraryTable">
+  <library name="lib">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/build/lib/jakarta.persistence-api-3.1.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/build/lib/jakarta.validation-api-3.0.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/build/lib/mssql-jdbc-11.2.3.jre17.jar!/" />
+      <root url="jar://$PROJECT_DIR$/build/lib/jakarta.servlet-api-6.1.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/build/lib/gson-2.12.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/build/lib/jakarta.annotation-api-2.1.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/build/lib/jakarta.transaction-api-2.0.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/build/lib/jakarta.servlet.jsp.jstl-api-3.0.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/build/lib/jakarta.ejb-api-4.0.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/build/lib/hibernate-validator-5.0.1.Final.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
