@@ -33,12 +33,14 @@ public class AppointmentServlet extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
             String action = request.getParameter("action");
             if (action == null) {
-                request.setAttribute("appList", sb.getAppointments());
-                request.getRequestDispatcher("indexAdmin.jsp").forward(request, response);
+                //request.setAttribute("appList", sb.getAppointments());
+                //request.getRequestDispatcher("indexAppointment.jsp").forward(request, response);
+                request.setAttribute("bList", sb.getBills());
+                request.getRequestDispatcher("indexBill.jsp").forward(request, response);
             } else {
                 switch (action) {
                     case "GetPatient":
-                        request.setAttribute("p", sb.getPatient(1));
+                        request.setAttribute("p", sb.getPatient(6));
                         request.getRequestDispatcher("booking.jsp").forward(request, response);
                         break;
                     case "Booking":
@@ -51,28 +53,28 @@ public class AppointmentServlet extends HttpServlet {
 
                         if (department == null || department.isEmpty() || department.equals("")) {
                             request.setAttribute("errDepart", "Vui lòng chọn ngành khám");
-                            request.setAttribute("p", sb.getPatient(1));
+                            request.setAttribute("p", sb.getPatient(6));
                             request.getRequestDispatcher("booking.jsp").forward(request, response);
                             break;
                         }
 
                         if (doctorIdStr == null || doctorIdStr.isEmpty() || doctorIdStr.equals("0")) {
                             request.setAttribute("errDoctor", "Vui lòng chọn bác sĩ");
-                            request.setAttribute("p", sb.getPatient(1));
+                            request.setAttribute("p", sb.getPatient(6));
                             request.getRequestDispatcher("booking.jsp").forward(request, response);
                             break;
                         }
 
                         if (selectedDate == null || selectedDate.isEmpty()) {
                             request.setAttribute("errDate", "Vui lòng chọn ngày hẹn");
-                            request.setAttribute("p", sb.getPatient(1));
+                            request.setAttribute("p", sb.getPatient(6));
                             request.getRequestDispatcher("booking.jsp").forward(request, response);
                             break;
                         }
 
                         if (selectedTime == null || selectedTime.isEmpty()) {
                             request.setAttribute("errTime", "Vui lòng chọn giờ hẹn");
-                            request.setAttribute("p", sb.getPatient(1));
+                            request.setAttribute("p", sb.getPatient(6));
                             request.getRequestDispatcher("booking.jsp").forward(request, response);
                             break;
                         }
@@ -94,7 +96,7 @@ public class AppointmentServlet extends HttpServlet {
                         }
                         Doctors db = sb.getDoctor(doctorId);
                         Patients pb = sb.getPatient(patientId);
-                        Appointments appb = new Appointments(appointmentDate, appointmentTime, "Scheduled", notes, db, pb);
+                        Appointments appb = new Appointments(appointmentDate, appointmentTime, "Da dat lich kham", notes, db, pb);
                         sb.booking(appb);
                         response.sendRedirect("AppointmentServlet");
                         break;

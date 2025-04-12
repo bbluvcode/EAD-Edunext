@@ -5,13 +5,16 @@
 package bean;
 
 import entities.*;
+import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
+import jakarta.mail.MessagingException;
 import jakarta.persistence.*;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
+import util.MailUtil;
 
 /**
  *
@@ -20,6 +23,7 @@ import java.util.stream.Collectors;
 @Stateless
 public class AppointmentSB implements AppointmentSBLocal {
 
+    private MailUtil mailUtil;
     private EntityManagerFactory emf = Persistence.createEntityManagerFactory("EADEdunext");
     private EntityManager em = emf.createEntityManager();
 
@@ -62,7 +66,23 @@ public class AppointmentSB implements AppointmentSBLocal {
     public void booking(Appointments appointments) {
         try {
             em.getTransaction().begin();
+
             em.persist(appointments);
+
+            String emailContent = getHtmlTemplateForPatient(appointments);
+            try {
+                mailUtil.sendEmail(appointments.getPatientID().getEmail(), "Xác nhận đặt lịch khám", emailContent);
+            } catch (MessagingException e) {
+                e.printStackTrace();
+            }
+
+            String doctorEmailContent = getHtmlTemplateForDoctor(appointments);
+            try {
+                mailUtil.sendEmail(appointments.getDoctorID().getEmail(), "Bạn có lịch khám mới", doctorEmailContent);
+            } catch (MessagingException e) {
+                e.printStackTrace();
+            }
+
             em.getTransaction().commit();
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -93,11 +113,9 @@ public class AppointmentSB implements AppointmentSBLocal {
     @Override
     public List<String> getBookedTimeSlots(int doctorId, String dateStr) {
         try {
-            // Format ngày
             DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             Date date = dateFormat.parse(dateStr);
 
-            // Truy vấn danh sách giờ đã đặt (kiểu Date chứa Time)
             List<Date> result = em.createQuery(
                     "SELECT a.appointmentTime FROM Appointments a "
                     + "WHERE a.doctorID.doctorID = :doctorId AND a.appointmentDate = :date", Date.class)
@@ -105,7 +123,6 @@ public class AppointmentSB implements AppointmentSBLocal {
                     .setParameter("date", date)
                     .getResultList();
 
-            // Format giờ thành chuỗi "HH:mm"
             SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
             return result.stream()
                     .map(timeFormat::format)
@@ -116,4 +133,87 @@ public class AppointmentSB implements AppointmentSBLocal {
             return Collections.emptyList();
         }
     }
+
+    @Override
+    public List<Bills> getBills() {
+        return em.createNamedQuery("Bills.findAll", Bills.class)
+                .getResultList();
+    }
+
+    @Override
+    public List<Bills> getBillsByPatient(int id) {
+        return em.createNamedQuery("Bills.findByPatientId", Bills.class)
+                .setParameter("id", id)
+                .getResultList();
+    }
+
+    @Override
+    public String getHtmlTemplateForDoctor(Appointments a) {
+        String doctorName = a.getDoctorID().getFullName();
+        String patientName = a.getPatientID().getFullName();
+        String date = a.formatDate();
+        String time = a.formatTime();
+
+        return "<!DOCTYPE html>"
+                + "<html>"
+                + "<head>"
+                + "<meta charset='UTF-8'>"
+                + "<style>"
+                + "body { font-family: Arial, sans-serif; background-color: #fff7e6; padding: 20px; }"
+                + ".container { background-color: #ffffff; border-radius: 10px; padding: 30px; border-left: 5px solid #007bff; }"
+                + "h2 { color: #007bff; }"
+                + "p { font-size: 16px; }"
+                + "</style>"
+                + "</head>"
+                + "<body>"
+                + "<div class='container'>"
+                + "<h2>Bạn có một lịch hẹn mới</h2>"
+                + "<p>Xin chào Bác sĩ <strong>" + doctorName + "</strong>,</p>"
+                + "<p>Bạn có lịch hẹn mới với bệnh nhân <strong>" + patientName + "</strong>:</p>"
+                + "<ul>"
+                + "<li><strong>Ngày khám:</strong> " + date + "</li>"
+                + "<li><strong>Thời gian:</strong> " + time + "</li>"
+                + "</ul>"
+                + "<p>Vui lòng chuẩn bị đầy đủ để khám đúng giờ.</p>"
+                + "</div>"
+                + "</body>"
+                + "</html>";
+    }
+
+    @Override
+    public String getHtmlTemplateForPatient(Appointments a) {
+        String patientName = a.getPatientID().getFullName();
+        String doctorName = a.getDoctorID().getFullName();
+        String department = a.getDoctorID().getSpecialization();
+        String date = a.formatDate();
+        String time = a.formatTime();
+
+        return "<!DOCTYPE html>"
+                + "<html>"
+                + "<head>"
+                + "<meta charset='UTF-8'>"
+                + "<style>"
+                + "body { font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 20px; }"
+                + ".container { background-color: #ffffff; border-radius: 10px; padding: 30px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }"
+                + "h2 { color: #007bff; }"
+                + "p { font-size: 16px; }"
+                + "</style>"
+                + "</head>"
+                + "<body>"
+                + "<div class='container'>"
+                + "<h2>Xác nhận đặt lịch khám thành công</h2>"
+                + "<p>Xin chào <strong>" + patientName + "</strong>,</p>"
+                + "<p>Bạn đã đặt lịch khám thành công với thông tin sau:</p>"
+                + "<ul>"
+                + "<li><strong>Bác sĩ:</strong> " + doctorName + " (" + department + ")</li>"
+                + "<li><strong>Ngày khám:</strong> " + date + "</li>"
+                + "<li><strong>Thời gian:</strong> " + time + "</li>"
+                + "</ul>"
+                + "<p>Vui lòng đến đúng giờ và mang theo giấy tờ cần thiết.</p>"
+                + "<p>Cảm ơn bạn đã tin tưởng bệnh viện của chúng tôi!</p>"
+                + "</div>"
+                + "</body>"
+                + "</html>";
+    }
+
 }
