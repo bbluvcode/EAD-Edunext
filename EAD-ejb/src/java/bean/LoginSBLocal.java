@@ -15,5 +15,7 @@ public interface LoginSBLocal {
 
     Object login(String email, String password);
 
-    boolean sendOtp(String email);
+    boolean sendOtp(String email, String otp);
+
+    boolean updatePassword(String email, String newPassword);
 }
