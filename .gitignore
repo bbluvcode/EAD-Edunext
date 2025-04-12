@@ -1,8 +1,8 @@
 # Build artifacts
 /build/
-/dist/
-/EAD-ejb/dist/
-/EAD-war/dist/
+dist/
+EAD-ejb/dist/
+EAD-war/dist/
 *.jar
 *.war
 *.ear
