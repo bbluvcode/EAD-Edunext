@@ -10,3 +10,7 @@
 
 # IDE configs (NetBeans)
 nbproject/private/
+**/nbproject/private/private.xml
+
+# Library JARs
+lib/*.jar

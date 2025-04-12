@@ -34,4 +34,13 @@ public interface AppointmentSBLocal {
     public void booking(Appointments appointments);
 
     public void cancel(int patientId);
+
+    public String getHtmlTemplateForDoctor(Appointments a);
+
+    public String getHtmlTemplateForPatient(Appointments a);
+
+    public List<Bills> getBills();
+
+    public List<Bills> getBillsByPatient(int id);
+
 }

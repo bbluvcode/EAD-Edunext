@@ -26,29 +26,28 @@
                     <tr>                      
                         <th>#</th>
                         <th>Patient Name</th>
-                        <th>Appointment Date</th>
-                        <th>Appointment Time</th>
+                        <th>Amount</th>
+                        <th>Payment Date</th>
+                        <th>Payment Method</th>
                         <th>Doctor Name</th>
-                        <th>Status</th>
-                        <th>Notes</th>                                                
+                        <th>Status</th>                                               
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <c:forEach items="${appList}" var="e">
+                    <c:forEach items="${bList}" var="e">
                         <tr>
-                            <td>${e.appointmentID}</td>
-                            <td>${e.patientID.fullName}</td>  
+                            <td>${e.billID}</td>
+                            <td>${e.appointmentID.patientID.fullName}</td> 
+                            <td>${e.amount}</td>  
                             <td>${e.formatDate()}</td>
-                            <td>${e.formatTime()}</td>
-                            <td>${e.doctorID.fullName}</td>  
+                            <td>${e.paymentMethod}</td>
+                            <td>${e.appointmentID.doctorID.fullName}</td>  
                             <td>${e.status}</td>  
-                            <td>${e.notes}</td>  
                             <td>
-                                <a href="MedicalServlet?appointmentId=${e.appointmentID}" class="btn btn-primary">View Medical Record</a>
                                 <a href="AppointmentServlet?action=Cancel&id=${e.appointmentID}" class="btn btn-danger" 
                                    onClick="return confirm('Are you sure want to Cancel Appointment?')">Cancel</a>
-                            </td>
+                            </td>  
                         </tr>
                     </c:forEach>
                 </tbody>
