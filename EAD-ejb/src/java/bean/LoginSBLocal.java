@@ -13,7 +13,7 @@ import jakarta.ejb.Local;
 @Local
 public interface LoginSBLocal {
 
-    Object login(String email, String password, String role);
+    Object login(String email, String password);
 
     boolean sendOtp(String email);
 }

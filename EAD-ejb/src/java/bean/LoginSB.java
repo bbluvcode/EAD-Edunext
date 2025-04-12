@@ -23,7 +23,7 @@ public class LoginSB implements LoginSBLocal {
     EntityManager em = emf.createEntityManager();
 
     @Override
-    public Object login(String email, String password, String role) {
+    public Object login(String email, String password) {
         // Kiểm tra đăng nhập với Doctors
         TypedQuery<Doctors> doctorQuery = em.createNamedQuery("Doctors.findByEmail", Doctors.class);
         doctorQuery.setParameter("email", email);
