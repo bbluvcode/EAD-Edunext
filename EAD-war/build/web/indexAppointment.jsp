@@ -16,14 +16,6 @@
     <body>
         <div class="container mt-4 w-75">
             <div class="d-flex align-items-center gap-2">
-<<<<<<< HEAD
-                <div class="mb-3 me-4">
-                    <a href="AppointmentServlet?action=GetPatient" class="btn btn-success">Create Appointment</a>
-                </div>
-            </div>
-            <h2 class="text-center">List of Appointments</h2>
-            <table class="table table-bordered align-middle text-center">
-=======
                 <div class="mb-3 me-3">
                     <a href="AppointmentServlet?action=GetPatient" class="btn btn-success">Tạo cuộc hẹn khám</a>
                 </div>
@@ -38,8 +30,7 @@
                 </div>
             </div>
             <h2 class="text-center">List of Appointments</h2>
-          <table class="table table-bordered align-middle text-center">
->>>>>>> dev
+            <table class="table table-bordered align-middle text-center">
                 <thead class="table-dark">
                     <tr>                      
                         <th>#</th>
@@ -63,16 +54,10 @@
                             <td>${e.status}</td>  
                             <td>${e.notes}</td>  
                             <td>
-<<<<<<< HEAD
                                 <a href="MedicalServlet?appointmentId=${e.appointmentID}" class="btn btn-primary">View Medical Record</a>
                                 <a href="AppointmentServlet?action=Cancel&id=${e.appointmentID}" class="btn btn-danger" 
                                    onClick="return confirm('Are you sure want to Cancel Appointment?')">Cancel</a>
                             </td>
-=======
-                                <a href="AppointmentServlet?action=Cancel&id=${e.appointmentID}" class="btn btn-danger" 
-                                   onClick="return confirm('Are you sure want to Cancel Appointment?')">Cancel</a>
-                            </td>  
->>>>>>> dev
                         </tr>
                     </c:forEach>
                 </tbody>
