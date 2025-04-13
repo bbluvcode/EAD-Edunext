@@ -12,6 +12,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 /**
  *
@@ -35,18 +36,31 @@ public class LoginServlet extends HttpServlet {
                     case "Login":
                         String email = request.getParameter("email");
                         String pass = request.getParameter("password");
+
                         Object user = sb.login(email, pass);
+
                         if (user != null) {
-                            request.getSession().setAttribute("user", user);
+                            HttpSession session = request.getSession();
+                            session.setAttribute("user", user); // lưu đối tượng gốc (bệnh nhân hoặc bác sĩ)
+
                             if (user instanceof entities.Doctors) {
-                                response.sendRedirect("doctorHome.jsp");
+                                session.setAttribute("doctor", (entities.Doctors) user);
+                                //DOI DUONG DAN O DAY NHA A NHATTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT (href qua cái này giúp em DoctorServlet)
+                                response.sendRedirect("DoctorServlet");
+
                             } else if (user instanceof entities.Patients) {
-                                response.sendRedirect("patientHome.jsp");
+                                session.setAttribute("patient", (entities.Patients) user);
+                                response.sendRedirect("index.jsp");
                             }
+
                         } else {
                             request.setAttribute("error", "Invalid email or password.");
                             request.getRequestDispatcher("login.jsp").forward(request, response);
                         }
+                        break;
+                    case "Logout":
+                        request.getSession().invalidate(); // Xoá toàn bộ session
+                        response.sendRedirect("index.jsp"); // Quay về trang chủ
                         break;
 
                     case "SendOTP":
@@ -61,6 +75,9 @@ public class LoginServlet extends HttpServlet {
                             request.setAttribute("error", "Email not found.");
                         }
 
+                        // Giữ lại giá trị email và phần toggle-forgot không bị mất
+                        request.setAttribute("email", emailToSend);  // Giữ giá trị email
+                        request.setAttribute("showForgotPassword", "true");  // Chỉ ra phần forgot password phải hiển thị
                         request.getRequestDispatcher("login.jsp").forward(request, response);
                         break;
 
@@ -75,25 +92,23 @@ public class LoginServlet extends HttpServlet {
                             request.getRequestDispatcher("login.jsp").forward(request, response);
                         }
                         break;
-
                     case "ResetPassword":
                         String newPass = request.getParameter("newPassword");
                         String confirmPass = request.getParameter("confirmPassword");
                         String emailToReset = (String) request.getSession().getAttribute("otpEmail");
-
                         if (emailToReset == null) {
                             request.setAttribute("error", "Session expired. Please try again.");
                             request.getRequestDispatcher("login.jsp").forward(request, response);
                             return;
                         }
-
                         if (!newPass.equals(confirmPass)) {
                             request.setAttribute("error", "Passwords do not match.");
                             request.getRequestDispatcher("resetPassword.jsp").forward(request, response);
                             return;
                         }
-
                         if (sb.updatePassword(emailToReset, newPass)) {
+                            // Sau khi reset thành công, giữ lại email trong request để điền vào form
+                            request.setAttribute("email", emailToReset);  // Truyền email về trang login
                             request.setAttribute("message", "Password updated. Please login.");
                             request.getRequestDispatcher("login.jsp").forward(request, response);
                         } else {
@@ -101,6 +116,7 @@ public class LoginServlet extends HttpServlet {
                             request.getRequestDispatcher("resetPassword.jsp").forward(request, response);
                         }
                         break;
+
                     default:
                         throw new AssertionError();
                 }

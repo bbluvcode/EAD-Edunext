@@ -3,8 +3,12 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/2308A0/HK4/EAD-Edunext/EAD-ejb/src/java/bean/LoginSB.java</file>
-            <file>file:/D:/2308A0/HK4/EAD-Edunext/EAD-ejb/src/java/bean/LoginSBLocal.java</file>
+            <file>file:/D:/2308A0/HK4/EAD-Edunext/EAD-ejb/src/java/bean/DoctorSBLocal.java</file>
+            <file>file:/D:/2308A0/HK4/EAD-Edunext/EAD-ejb/src/java/bean/AppointmentSBLocal.java</file>
+            <file>file:/D:/2308A0/HK4/EAD-Edunext/EAD-ejb/src/java/bean/AppointmentSB.java</file>
+            <file>file:/D:/2308A0/HK4/EAD-Edunext/EAD-ejb/src/java/entities/Doctors.java</file>
+            <file>file:/D:/2308A0/HK4/EAD-Edunext/EAD-ejb/src/java/bean/DoctorSB.java</file>
+            <file>file:/D:/2308A0/HK4/EAD-Edunext/EAD-ejb/src/java/entities/Appointments.java</file>
         </group>
     </open-files>
 </project-private>

@@ -187,3 +187,21 @@ VALUES
 (5, 5, 3, '2 lan/ngay', 4),
 (5, 1, 1, '2 lan/ngay', 2),
 (6, 6, 2, '2 lan/ngay', 3);
+
+ALTER TABLE [Sem4DB].[dbo].[EADDoctors]
+ADD [Password] NVARCHAR(255) NULL;
+ALTER TABLE [Sem4DB].[dbo].[EADPatients]
+ADD [Password] NVARCHAR(255) NULL;
+UPDATE [Sem4DB].[dbo].[EADDoctors]
+SET [Password] = '123';
+UPDATE [Sem4DB].[dbo].[EADPatients]
+SET [Password] = '123';
+
+ALTER TABLE [Sem4DB].[dbo].[EADDoctors]
+ADD Role BIT;
+UPDATE [Sem4DB].[dbo].[EADDoctors]
+SET Role = 1
+WHERE DoctorID = 1;
+UPDATE [Sem4DB].[dbo].[EADDoctors]
+SET Role = 0
+WHERE DoctorID <> 1;
