@@ -36,7 +36,8 @@ import java.util.Date;
     @NamedQuery(name = "Doctors.findBySpecialization", query = "SELECT d FROM Doctors d WHERE d.specialization = :specialization"),
     @NamedQuery(name = "Doctors.findByPhone", query = "SELECT d FROM Doctors d WHERE d.phone = :phone"),
     @NamedQuery(name = "Doctors.findByDateOfBirth", query = "SELECT d FROM Doctors d WHERE d.dateOfBirth = :dateOfBirth"),
-    @NamedQuery(name = "Doctors.findByPassword", query = "SELECT d FROM Doctors d WHERE d.password = :password")})
+    @NamedQuery(name = "Doctors.findByPassword", query = "SELECT d FROM Doctors d WHERE d.password = :password"),
+    @NamedQuery(name = "Doctors.findByRole", query = "SELECT d FROM Doctors d WHERE d.role = :role")})
 public class Doctors implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -69,6 +70,8 @@ public class Doctors implements Serializable {
     @Size(max = 255)
     @Column(name = "Password")
     private String password;
+    @Column(name = "Role")
+    private Boolean role;
 
     public Doctors() {
     }
@@ -139,9 +142,18 @@ public class Doctors implements Serializable {
         this.password = password;
     }
 
+    public Boolean getRole() {
+        return role;
+    }
+
+    public void setRole(Boolean role) {
+        this.role = role;
+    }
+
     @Transient
     public String formatDOB() {
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         return sdf.format(dateOfBirth);
     }
+
 }
