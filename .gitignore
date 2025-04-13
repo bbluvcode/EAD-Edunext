@@ -1,12 +1,15 @@
 # Build artifacts
 /build/
-/dist/
-/EAD-ejb/dist/
-/EAD-war/dist/
+dist/
+EAD-ejb/dist/
+EAD-war/dist/
 *.jar
 *.war
 *.ear
 *.dpf
 
 # IDE configs (NetBeans)
-nbproject/private/
+**/nbproject/private/
+
+# Library JARs
+lib/*.jar
