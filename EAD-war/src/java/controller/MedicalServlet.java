@@ -7,6 +7,7 @@ package controller;
 import bean.MedicalSBLocal;
 import entities.Appointments;
 import entities.MedicalRecords;
+import entities.Patients;
 import jakarta.ejb.EJB;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -34,14 +35,16 @@ public class MedicalServlet extends HttpServlet {
             int appointmentId = Integer.parseInt(appointmentIdStr);
             try {
                 MedicalRecords record = medicalSB.getMedicalRecordByAppointmentId(appointmentId);
+                Appointments appointment = record.getAppointmentID(); // Assuming this is mapped
+                Patients patient = appointment.getPatientID(); // Assuming this is mapped
+
                 request.setAttribute("medicalRecord", record);
                 request.setAttribute("appointmentId", appointmentId);
+                request.setAttribute("patient", patient); // Pass patient details
                 request.getRequestDispatcher("medical.jsp").forward(request, response);
             } catch (Exception e) {
                 request.setAttribute("appointmentId", appointmentId);
-
                 request.getRequestDispatcher("medical.jsp").forward(request, response);
-
             }
         } else {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Appointment ID is required.");
