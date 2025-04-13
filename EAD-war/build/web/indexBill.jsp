@@ -17,11 +17,11 @@
         <div class="container mt-4 w-75">
             <div class="d-flex align-items-center gap-2">
                 <div class="mb-3 me-4">
-                    <a href="AppointmentServlet?action=GetPatient" class="btn btn-success">Create Appointment</a>
+                    <a href="AppointmentServlet" class="btn btn-danger">Back</a>
                 </div>
             </div>
-            <h2 class="text-center">List of Appointments</h2>
-          <table class="table table-bordered align-middle text-center">
+            <h2 class="text-center">Danh sách hóa đơn</h2>
+            <table class="table table-bordered align-middle text-center">
                 <thead class="table-dark">
                     <tr>                      
                         <th>#</th>
