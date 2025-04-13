@@ -9,11 +9,7 @@
         <class>entities.Medicines</class>
         <class>entities.Patients</class>
         <class>entities.Prescriptions</class>
-<<<<<<< HEAD
-<!--        <exclude-unlisted-classes>false</exclude-unlisted-classes>-->
-=======
         <exclude-unlisted-classes>false</exclude-unlisted-classes>
->>>>>>> dev
         <properties>
             <property name="jakarta.persistence.jdbc.driver" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
             <property name="jakarta.persistence.jdbc.url" value="jdbc:sqlserver://localhost:1433;databaseName=Sem4DB;TrustServerCertificate=true"/>
