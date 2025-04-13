@@ -30,7 +30,7 @@
                     <form action="MedicalServlet" method="post" class="mb-3">
                         <input type="hidden" name="action" value="updateSymptoms">
                         <input type="hidden" name="recordId" value="${medicalRecord.recordID}">
-                        <input type="hidden" name="appointmentId" value="${appointment.appointmentID}">
+                        <input type="hidden" name="appointmentId" value="${appointmentId}">
                         <div class="mb-3">
                             <label for="newSymptoms" class="form-label">Update Symptoms</label>
                             <input type="text" class="form-control" id="newSymptoms" name="newSymptoms" required>
@@ -41,7 +41,7 @@
                     <form action="MedicalServlet" method="post" class="mb-3">
                         <input type="hidden" name="action" value="updateDiagnosis">
                         <input type="hidden" name="recordId" value="${medicalRecord.recordID}">
-                        <input type="hidden" name="appointmentId" value="${appointment.appointmentID}">
+                        <input type="hidden" name="appointmentId" value="${appointmentId}">
                         <div class="mb-3">
                             <label for="newDiagnosis" class="form-label">Update Diagnosis</label>
                             <input type="text" class="form-control" id="newDiagnosis" name="newDiagnosis" required>
@@ -52,7 +52,7 @@
                 <c:otherwise>
                     <form action="MedicalServlet" method="post">
                         <input type="hidden" name="action" value="create">
-                        <input type="hidden" name="appointmentId" value="${appointment.appointmentID}">
+                        <input type="hidden" name="appointmentId" value="${appointmentId}">
                         <div class="mb-3">
                             <label for="symptoms" class="form-label">Symptoms</label>
                             <input type="text" class="form-control" id="symptoms" name="symptoms" required>

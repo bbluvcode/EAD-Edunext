@@ -109,5 +109,5 @@ public class MedicalRecords implements Serializable {
     public void setAppointmentID(Appointments appointmentID) {
         this.appointmentID = appointmentID;
     }
-    
+
 }
