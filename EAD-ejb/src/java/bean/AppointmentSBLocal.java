@@ -42,5 +42,15 @@ public interface AppointmentSBLocal {
     public List<Bills> getBills();
 
     public List<Bills> getBillsByPatient(int id);
+    
+    public List<Medicines> getMedicines();
+    
+    public Medicines getOneMedicines(int id);
+    
+    public MedicalRecords getOneMedicalRecords(int id);
+    
+    public List<Prescriptions> getPrescriptions();
+    
+    public void addPrescriptions(Prescriptions p);
 
 }

@@ -19,35 +19,33 @@
                 <div class="mb-3 me-4">
                     <a href="AppointmentServlet" class="btn btn-danger">Back</a>
                 </div>
+                <div class="mb-3 me-4">
+                    <a href="AppointmentServlet?action=CreatePrescription" class="btn btn-success">Tạo đơn thuốc</a>
+                </div>
             </div>
-            <h2 class="text-center">Danh sách hóa đơn</h2>
+            <h2 class="text-center mb-3">Danh sách đơn thuốc</h2>
             <table class="table table-bordered align-middle text-center">
                 <thead class="table-dark">
                     <tr>                      
                         <th>#</th>
                         <th>Patient Name</th>
-                        <th>Amount</th>
-                        <th>Payment Date</th>
-                        <th>Payment Method</th>
-                        <th>Doctor Name</th>
-                        <th>Status</th>                                               
-                        <th>Action</th>
+                        <th>Record ID</th>
+                        <th>Medicine Name</th> 
+                        <th>Quantity</th>
+                        <th>Dosage</th>
+                        <th>Duration</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <c:forEach items="${bList}" var="e">
+                    <c:forEach items="${pList}" var="e">
                         <tr>
-                            <td>${e.billID}</td>
-                            <td>${e.appointmentID.patientID.fullName}</td> 
-                            <td>${e.amount}</td>  
-                            <td>${e.formatDate()}</td>
-                            <td>${e.paymentMethod}</td>
-                            <td>${e.appointmentID.doctorID.fullName}</td>  
-                            <td>${e.status}</td>  
-                            <td>
-                                <a href="AppointmentServlet?action=Cancel&id=${e.appointmentID}" class="btn btn-danger" 
-                                   onClick="return confirm('Are you sure want to Cancel Appointment?')">Cancel</a>
-                            </td>  
+                            <td>${e.prescriptionID}</td>
+                            <td>${e.recordID.appointmentID.patientID.fullName}</td> 
+                            <td>${e.recordID.recordID}</td>  
+                            <td>${e.medicineID.medicineName}</td>
+                            <td>${e.quantity}</td>
+                            <td>${e.dosage}</td>  
+                            <td>${e.duration}</td>   
                         </tr>
                     </c:forEach>
                 </tbody>
