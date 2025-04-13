@@ -16,8 +16,17 @@
     <body>
         <div class="container mt-4 w-75">
             <div class="d-flex align-items-center gap-2">
-                <div class="mb-3 me-4">
-                    <a href="AppointmentServlet?action=GetPatient" class="btn btn-success">Create Appointment</a>
+                <div class="mb-3 me-3">
+                    <a href="AppointmentServlet?action=GetPatient" class="btn btn-success">Tạo cuộc hẹn khám</a>
+                </div>
+                <div class="mb-3 me-3">
+                    <a href="AppointmentServlet?action=GetMedicine" class="btn btn-success">Tạo đơn thuốc</a>
+                </div>
+                <div class="mb-3 me-3">
+                    <a href="AppointmentServlet?action=GetPrescriptionsList" class="btn btn-success">Danh sách đơn thuốc</a>
+                </div>
+                <div class="mb-3 me-3">
+                    <a href="AppointmentServlet?action=GetBillsList" class="btn btn-success">Danh sách hóa đơn</a>
                 </div>
             </div>
             <h2 class="text-center">List of Appointments</h2>
