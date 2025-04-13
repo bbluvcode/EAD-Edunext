@@ -1,15 +1,15 @@
-# Build artifacts
-/build/
-dist/
-EAD-ejb/dist/
-EAD-war/dist/
-*.jar
-*.war
-*.ear
-*.dpf
+# Build output
+**/build/
+**/dist/
 
-# IDE configs (NetBeans)
+# Class files
+*.class
+
+# NetBeans
 **/nbproject/private/
+**/nbproject/private/**
 
-# Library JARs
-lib/*.jar
+# IDE generated files
+*.iml
+.idea/
+.DS_Store

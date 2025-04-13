@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="EAD-ejb2">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/build/EAD-ejb.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
