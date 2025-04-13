@@ -216,4 +216,37 @@ public class AppointmentSB implements AppointmentSBLocal {
                 + "</html>";
     }
 
+    @Override
+    public List<Medicines> getMedicines() {
+        return em.createNamedQuery("Medicines.findAll", Medicines.class)
+                .getResultList();
+    }
+
+    @Override
+    public Medicines getOneMedicines(int id) {
+        return em.find(Medicines.class, id);
+    }
+
+    @Override
+    public MedicalRecords getOneMedicalRecords(int id) {
+        return em.find(MedicalRecords.class, id);
+    }
+
+    @Override
+    public List<Prescriptions> getPrescriptions() {
+        return em.createNamedQuery("Prescriptions.findAll", Prescriptions.class)
+                .getResultList();
+    }
+
+    @Override
+    public void addPrescriptions(Prescriptions p) {
+        try {
+            em.getTransaction().begin();
+            em.persist(p);        
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            em.getTransaction().rollback();
+        }
+    }
 }

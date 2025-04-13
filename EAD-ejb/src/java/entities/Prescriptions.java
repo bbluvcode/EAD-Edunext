@@ -58,6 +58,14 @@ public class Prescriptions implements Serializable {
     public Prescriptions() {
     }
 
+    public Prescriptions(int quantity, String dosage, Integer duration, MedicalRecords recordID, Medicines medicineID) {
+        this.quantity = quantity;
+        this.dosage = dosage;
+        this.duration = duration;
+        this.recordID = recordID;
+        this.medicineID = medicineID;
+    }    
+    
     public Integer getPrescriptionID() {
         return prescriptionID;
     }
