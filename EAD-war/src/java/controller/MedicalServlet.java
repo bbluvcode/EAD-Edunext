@@ -38,7 +38,6 @@ public class MedicalServlet extends HttpServlet {
                 request.getRequestDispatcher("medical.jsp").forward(request, response);
             } catch (Exception e) {
                 request.getRequestDispatcher("medical.jsp").forward(request, response);
-
 //                e.printStackTrace();
 //                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid appointment ID.");
             }
