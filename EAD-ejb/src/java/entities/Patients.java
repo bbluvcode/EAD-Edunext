@@ -5,7 +5,6 @@
 package entities;
 
 import jakarta.persistence.Basic;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -13,7 +12,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -23,11 +21,10 @@ import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
 /**
  *
- * @author Admin
+ * @author ACER
  */
 @Entity
 @Table(name = "EADPatients")
@@ -39,7 +36,8 @@ import java.util.List;
     @NamedQuery(name = "Patients.findByEmail", query = "SELECT p FROM Patients p WHERE p.email = :email"),
     @NamedQuery(name = "Patients.findByPhone", query = "SELECT p FROM Patients p WHERE p.phone = :phone"),
     @NamedQuery(name = "Patients.findByGender", query = "SELECT p FROM Patients p WHERE p.gender = :gender"),
-    @NamedQuery(name = "Patients.findByDateOfBirth", query = "SELECT p FROM Patients p WHERE p.dateOfBirth = :dateOfBirth")})
+    @NamedQuery(name = "Patients.findByDateOfBirth", query = "SELECT p FROM Patients p WHERE p.dateOfBirth = :dateOfBirth"),
+    @NamedQuery(name = "Patients.findByPassword", query = "SELECT p FROM Patients p WHERE p.password = :password")})
 public class Patients implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -72,10 +70,21 @@ public class Patients implements Serializable {
     @Column(name = "DateOfBirth")
     @Temporal(TemporalType.DATE)
     private Date dateOfBirth;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "patientID")
-    private List<Appointments> appointmentsList;
+    @Size(max = 255)
+    @Column(name = "Password")
+    private String password;
 
     public Patients() {
+    }
+
+    public Patients(Integer patientID) {
+        this.patientID = patientID;
+    }
+
+    public Patients(Integer patientID, String fullName, String phone) {
+        this.patientID = patientID;
+        this.fullName = fullName;
+        this.phone = phone;
     }
 
     public Integer getPatientID() {
@@ -130,22 +139,21 @@ public class Patients implements Serializable {
         return dateOfBirth;
     }
 
+    public void setDateOfBirth(Date dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     @Transient
     public String formatDOB() {
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         return sdf.format(dateOfBirth);
     }
-
-    public void setDateOfBirth(Date dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-    }
-
-    public List<Appointments> getAppointmentsList() {
-        return appointmentsList;
-    }
-
-    public void setAppointmentsList(List<Appointments> appointmentsList) {
-        this.appointmentsList = appointmentsList;
-    }
-
 }

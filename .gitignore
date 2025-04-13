@@ -2,14 +2,42 @@
 **/build/
 **/dist/
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+##############################
+## Maven
+##############################
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+pom.xml.bak
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+**/build/lib/
+=======
+# IDE configs (NetBeans)
+=======
 # Class files
 *.class
 
 # NetBeans
+>>>>>>> dev
 **/nbproject/private/
 **/nbproject/private/**
 
+<<<<<<< HEAD
+# Library JARs
+lib/*.jar
+>>>>>>> dev
+=======
 # IDE generated files
 *.iml
 .idea/
 .DS_Store
+>>>>>>> dev
