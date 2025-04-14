@@ -5,12 +5,14 @@
 <%@ page import="java.text.SimpleDateFormat" %>
 <%
     Doctors doctor = (Doctors) request.getAttribute("doctor");
-        if (doctor == null) {
-            doctor = (Doctors) session.getAttribute("doctor");
-        }
+    if (doctor == null) {
+        doctor = (Doctors) session.getAttribute("doctor");
+    }
     List<Appointments> appointments = (List<Appointments>) request.getAttribute("appointments");
-    int totalAppointments = (appointments != null) ? appointments.size() : 0;
-
+    if (appointments != null) {
+        // Sắp xếp từ ngày gần nhất đến xa nhất
+        appointments.sort(( a2,           a1) -> a2.getAppointmentDate().compareTo(a1.getAppointmentDate()));
+    }
     // Dữ liệu cho ChartJS
     Map<String, Integer> appointmentByDate = new LinkedHashMap<>();
     SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
@@ -18,6 +20,21 @@
         for (Appointments a : appointments) {
             String dateStr = sdf.format(a.getAppointmentDate());
             appointmentByDate.put(dateStr, appointmentByDate.getOrDefault(dateStr, 0) + 1);
+        }
+    }
+%>
+<%@ page import="java.time.LocalDate" %>
+<%@ page import="java.time.ZoneId" %>
+<%
+    // Lấy ngày hôm nay
+    LocalDate today = LocalDate.now();
+    List<String> todayAppointments = new ArrayList<>();
+    if (appointments != null) {
+        for (Appointments a : appointments) {
+            LocalDate appDate = a.getAppointmentDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            if (appDate.equals(today)) {
+                todayAppointments.add(a.formatTime());
+            }
         }
     }
 %>
@@ -51,20 +68,11 @@
             </div>
             <h2 class="text-center mb-4"><%= doctor.getFullName()%> Detail</h2>
             <div class="row">
-                <!-- Circle Dashboard -->
-                <div class="col-md-4 text-center">
-                    <div class="circle-card">
-                        <div>
-                            <div><%= totalAppointments%></div>
-                            <div style="font-size: 16px;">Appointments</div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Personal Information -->
-                <div class="col-md-8">
+                <!-- Personal Information (on the left) -->
+                <div class="col-md-4">
                     <div class="card shadow-sm">
                         <div class="card-header bg-primary text-white">
-                            Personal Information
+                            Personal Info
                         </div>
                         <div class="card-body">
                             <p><strong>Full Name:</strong> <%= doctor.getFullName()%></p>
@@ -74,12 +82,29 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Today's Appointments (on the right) -->
+                <div class="col-md-8 d-flex align-items-center justify-content-center">
+                    <div class="circle-card bg-success">
+                        <div class="text-center">
+                            <div style="font-size: 18px;">Today's Appointments:</div>
+                            <% if (!todayAppointments.isEmpty()) { %>
+                            <% for (String time : todayAppointments) {%>
+                            <div><%= time%></div>
+                            <% } %>
+                            <% } else { %>
+                            <div>0</div>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
             </div>
 
+
             <!-- Chart and Table -->
-            <div class="row mt-5">
+            <div class="row mt-4">
                 <!-- ChartJS Column Chart -->
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <div class="card shadow-sm">
                         <div class="card-header bg-success text-white">
                             Appointments per Day
@@ -91,7 +116,7 @@
                 </div>
 
                 <!-- Appointment Table -->
-                <div class="col-md-6">
+                <div class="col-md-8">
                     <div class="card shadow-sm">
                         <div class="card-header bg-info text-white">
                             Appointment Details
@@ -102,19 +127,36 @@
                                     <tr>
                                         <th>Date</th>
                                         <th>Time</th>
+                                        <th>Patient</th>
                                         <th>Note</th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <% if (appointments != null) {
-                                for (Appointments a : appointments) {%>
+                                            for (Appointments a : appointments) {%>
                                     <tr>
                                         <td><%= a.formatDate()%></td>
                                         <td><%= a.formatTime()%></td>
+                                        <td><%= a.getPatientID() != null ? a.getPatientID().getFullName() : "N/A"%></td>
                                         <td><%= a.getNotes() != null ? a.getNotes() : "N/A"%></td>
+                                        <td>
+                                            <form action="AppointmentServlet" method="get" class="d-inline">
+                                                <button class="btn btn-sm btn-outline-primary" name="action" value="view">Appointment</button>
+                                            </form>
+                                            <form action="MedicineServlet" method="get" class="d-inline">
+                                                <button class="btn btn-sm btn-outline-success" name="action" value="view">Medicine</button>
+                                            </form>
+                                            <form action="PrescriptionServlet" method="get" class="d-inline">
+                                                <button class="btn btn-sm btn-outline-warning" name="action" value="view">Prescription</button>
+                                            </form>
+                                            <form action="BillServlet" method="get" class="d-inline">
+                                                <button class="btn btn-sm btn-outline-danger" name="action" value="view">Bill</button>
+                                            </form>
+                                        </td>
                                     </tr>
                                     <%  }
-                        } else { %>
+                                    } else { %>
                                     <tr><td colspan="3" class="text-center">No appointments found.</td></tr>
                                     <% } %>
                                 </tbody>
