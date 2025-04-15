@@ -31,9 +31,14 @@
                 <div class="container pt-5">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h1 class="">Medical Record</h1>
-                        <a href="AppointmentServlet" class="btn btn-secondary">
-                            Back to Appointments <i class="bi bi-arrow-right"></i>
-                        </a>
+                        <div class="right-title">
+                            <a href="" class="btn btn-success">
+                                Finish <i class="bi bi-bookmark-check"></i>
+                            </a>
+                            <a href="AppointmentServlet" class="btn btn-secondary">
+                                Back <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
                     </div>
                     <c:choose>
                         <c:when test="${not empty medicalRecord}">
@@ -69,7 +74,26 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row mb-4 prescription-list">
+                            <div class="button-group">
+                                <!-- Button to toggle Prescription List -->
+                                <button id="togglePrescriptionListBtn" class="btn btn-primary mt-3">
+                                    <i class="bi bi-view-list"></i> Prescription List
+                                </button>
+
+                                <!-- Button to toggle Update Symptoms Form -->
+                                <button id="toggleUpdateSymptomsFormBtn" class="btn btn-secondary mt-3">
+                                    <i class="bi bi-pencil"></i> Update Symptoms Form
+                                </button>
+
+                                <!-- Button to toggle Update Diagnosis Form -->
+                                <button id="toggleUpdateDiagnosisFormBtn" class="btn btn-secondary mt-3">
+                                    <i class="bi bi-pencil"></i> Update Diagnosis Form
+                                </button>
+                            </div>
+
+                            <!-- Prescription List -->
+                            <div class="row my-4 prescription-list" id="prescriptionList"
+                                style="${not empty prescriptions ? '' : 'display: none;'}">
                                 <div class="col-md-12">
                                     <div class="card shadow">
                                         <div class="card-body">
@@ -82,7 +106,7 @@
                                                         <th>Dosage</th>
                                                         <th>Quantity</th>
                                                         <th>Duration</th>
-                                                        <th>Actions</th> <!-- New column for actions -->
+                                                        <th>Actions</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -95,16 +119,10 @@
                                                             <td>${prescription.quantity}</td>
                                                             <td>${prescription.duration}</td>
                                                             <td>
-                                                                <!-- Update Button -->
                                                                 <button class="btn btn-warning btn-sm update-btn"
-                                                                    data-id="${prescription.prescriptionID}"
-                                                                    data-medicine="${prescription.medicineID.medicineID}"
-                                                                    data-dosage="${prescription.dosage}"
-                                                                    data-quantity="${prescription.quantity}"
-                                                                    data-duration="${prescription.duration}">
+                                                                    data-id="${prescription.prescriptionID}">
                                                                     <i class="bi bi-pencil"></i>
                                                                 </button>
-                                                                <!-- Delete Button -->
                                                                 <button class="btn btn-danger btn-sm delete-btn"
                                                                     data-id="${prescription.prescriptionID}">
                                                                     <i class="bi bi-trash"></i>
@@ -114,7 +132,6 @@
                                                     </c:forEach>
                                                 </tbody>
                                             </table>
-                                            <!-- Add Prescription Button -->
                                             <button id="showPrescriptionFormBtn" class="btn btn-primary mt-3">
                                                 <i class="bi bi-plus-circle"></i> Add Prescription
                                             </button>
@@ -122,6 +139,37 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <!-- Update Symptoms Form -->
+                            <div class="row my-4 card shadow" id="updateSymptomsForm" style="display: none;">
+                                <form action="MedicalServlet" method="post" class="mb-3">
+                                    <input type="hidden" name="action" value="updateSymptoms">
+                                    <input type="hidden" name="recordId" value="${medicalRecord.recordID}">
+                                    <input type="hidden" name="appointmentId" value="${appointmentId}">
+                                    <div class="my-3 input-group">
+                                        <input type="text" class="form-control" id="newSymptoms" name="newSymptoms"
+                                            placeholder="Enter new symptoms" required>
+                                            <button type="submit" class="btn btn-primary"><i class="bi bi-pencil"></i> Update
+                                                Symptoms</button>
+                                            </div>
+                                </form>
+                            </div>
+
+                            <!-- Update Diagnosis Form -->
+                            <div class="row my-4 card shadow" id="updateDiagnosisForm" style="display: none;">
+                                <form action="MedicalServlet" method="post" class="mb-3">
+                                    <input type="hidden" name="action" value="updateDiagnosis">
+                                    <input type="hidden" name="recordId" value="${medicalRecord.recordID}">
+                                    <input type="hidden" name="appointmentId" value="${appointmentId}">
+                                    <div class="my-3 input-group">
+                                        <input type="text" class="form-control" id="newDiagnosis" name="newDiagnosis"
+                                            placeholder="Enter new diagnosis" required>
+                                            <button type="submit" class="btn btn-primary"><i class="bi bi-pencil"></i> Update
+                                                Diagnosis</button>
+                                    </div>
+                                </form>
+                            </div>
+                            
                             <div class="row mb-4 prescription-form" id="prescriptionForm" style="display: none;">
                                 <div class="col-md-12">
                                     <div class="card shadow">
@@ -158,7 +206,7 @@
                                                         name="duration" required>
                                                 </div>
                                                 <button type="submit" class="btn btn-success">Add
-                                                Prescription</button>
+                                                    Prescription</button>
                                             </form>
                                         </div>
                                     </div>
@@ -209,32 +257,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- Form to update symptoms -->
-                            <form action="MedicalServlet" method="post" class="mb-3">
-                                <input type="hidden" name="action" value="updateSymptoms">
-                                <input type="hidden" name="recordId" value="${medicalRecord.recordID}">
-                                <input type="hidden" name="appointmentId" value="${appointmentId}">
-                                <div class="mb-3">
-                                    <label for="newSymptoms" class="form-label">Update Symptoms</label>
-                                    <input type="text" class="form-control" id="newSymptoms" name="newSymptoms"
-                                        placeholder="Enter new symptoms" required>
-                                </div>
-                                <button type="submit" class="btn btn-primary"><i class="bi bi-pencil"></i> Update
-                                    Symptoms</button>
-                            </form>
-                            <!-- Form to update diagnosis -->
-                            <form action="MedicalServlet" method="post" class="mb-3">
-                                <input type="hidden" name="action" value="updateDiagnosis">
-                                <input type="hidden" name="recordId" value="${medicalRecord.recordID}">
-                                <input type="hidden" name="appointmentId" value="${appointmentId}">
-                                <div class="mb-3">
-                                    <label for="newDiagnosis" class="form-label">Update Diagnosis</label>
-                                    <input type="text" class="form-control" id="newDiagnosis" name="newDiagnosis"
-                                        placeholder="Enter new diagnosis" required>
-                                </div>
-                                <button type="submit" class="btn btn-primary"><i class="bi bi-pencil"></i> Update
-                                    Diagnosis</button>
-                            </form>
+                          
                         </c:when>
                         <c:otherwise>
                             <form action="MedicalServlet" method="post">
@@ -350,6 +373,42 @@
                                     .catch(error => console.error('Error:', error));
                             }
                         });
+                    });
+
+                    // Toggle Prescription List
+                    document.getElementById("togglePrescriptionListBtn").addEventListener("click", function () {
+                        const prescriptionList = document.getElementById("prescriptionList");
+                        if (prescriptionList.style.display === "none") {
+                            prescriptionList.style.display = "block";
+                            this.innerHTML = '<i class="bi bi-eye-slash"></i> Hide Prescription List';
+                        } else {
+                            prescriptionList.style.display = "none";
+                            this.innerHTML = '<i class="bi bi-view-list"></i> Show Prescription List';
+                        }
+                    });
+
+                    // Toggle Update Symptoms Form
+                    document.getElementById("toggleUpdateSymptomsFormBtn").addEventListener("click", function () {
+                        const updateSymptomsForm = document.getElementById("updateSymptomsForm");
+                        if (updateSymptomsForm.style.display === "none") {
+                            updateSymptomsForm.style.display = "block";
+                            this.innerHTML = '<i class="bi bi-eye-slash"></i> Hide Update Symptoms Form';
+                        } else {
+                            updateSymptomsForm.style.display = "none";
+                            this.innerHTML = '<i class="bi bi-pencil"></i> Show Update Symptoms Form';
+                        }
+                    });
+
+                    // Toggle Update Diagnosis Form
+                    document.getElementById("toggleUpdateDiagnosisFormBtn").addEventListener("click", function () {
+                        const updateDiagnosisForm = document.getElementById("updateDiagnosisForm");
+                        if (updateDiagnosisForm.style.display === "none") {
+                            updateDiagnosisForm.style.display = "block";
+                            this.innerHTML = '<i class="bi bi-eye-slash"></i> Hide Update Diagnosis Form';
+                        } else {
+                            updateDiagnosisForm.style.display = "none";
+                            this.innerHTML = '<i class="bi bi-pencil"></i> Show Update Diagnosis Form';
+                        }
                     });
                 </script>
             </body>
