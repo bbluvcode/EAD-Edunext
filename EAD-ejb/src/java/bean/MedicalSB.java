@@ -43,7 +43,9 @@ public class MedicalSB implements MedicalSBLocal {
 
     @Override
     public MedicalRecords getMedicalRecordByAppointmentId(int appointmentId) {
-        return em.createQuery("SELECT m FROM MedicalRecords m WHERE m.appointmentID.appointmentID = :appointmentId", MedicalRecords.class)
+        return em
+                .createQuery("SELECT m FROM MedicalRecords m WHERE m.appointmentID.appointmentID = :appointmentId",
+                        MedicalRecords.class)
                 .setParameter("appointmentId", appointmentId)
                 .getSingleResult();
     }
@@ -82,23 +84,36 @@ public class MedicalSB implements MedicalSBLocal {
 
     @Override
     public List<Prescriptions> listPrescriptions(int recordId) {
-        return em.createQuery("SELECT p FROM Prescriptions p WHERE p.medicalRecord.recordID = :recordId", Prescriptions.class)
+        return em
+                .createQuery("SELECT p FROM Prescriptions p WHERE p.medicalRecord.recordID = :recordId",
+                        Prescriptions.class)
                 .setParameter("recordId", recordId)
                 .getResultList();
     }
 
     @Override
     public List<MedicalRecords> getMedicalHistoryByPatientId(int patientId) {
-        return em.createQuery("SELECT m FROM MedicalRecords m WHERE m.appointmentID.patientID.patientID = :patientId", MedicalRecords.class)
+        return em
+                .createQuery("SELECT m FROM MedicalRecords m WHERE m.appointmentID.patientID.patientID = :patientId",
+                        MedicalRecords.class)
                 .setParameter("patientId", patientId)
                 .getResultList();
     }
 
     @Override
     public List<MedicalRecords> searchMedicalHistoryByPatientId(int patientId, String searchQuery) {
+        // return em.createQuery(
+        // "SELECT m FROM MedicalRecords m WHERE m.appointmentID.patientID.patientID =
+        // :patientId " +
+        // "AND (LOWER(m.symptoms) LIKE :searchQuery OR LOWER(m.diagnosis) LIKE
+        // :searchQuery OR CAST(m.recordID AS string) LIKE :searchQuery)",
+        // MedicalRecords.class)
+        // .setParameter("patientId", patientId)
+        // .setParameter("searchQuery", "%" + searchQuery.toLowerCase() + "%")
+        // .getResultList();
         return em.createQuery(
                 "SELECT m FROM MedicalRecords m WHERE m.appointmentID.patientID.patientID = :patientId " +
-                "AND (LOWER(m.symptoms) LIKE :searchQuery OR LOWER(m.diagnosis) LIKE :searchQuery OR CAST(m.recordID AS string) LIKE :searchQuery)",
+                        "AND (m.symptoms LIKE :searchQuery OR m.diagnosis LIKE :searchQuery)",
                 MedicalRecords.class)
                 .setParameter("patientId", patientId)
                 .setParameter("searchQuery", "%" + searchQuery.toLowerCase() + "%")
