@@ -38,5 +38,10 @@ public interface MedicalSBLocal {
     List<Prescriptions> getPrescriptionsByRecordId(int recordId);
 
     void addPrescription(Prescriptions prescription);
+    
+    void updatePrescription(Prescriptions prescription);
+    void deletePrescription(int prescriptionId);
+    Prescriptions getPrescriptionById(int prescriptionId);
+
     List<Medicines> getAllMedicines();
 }

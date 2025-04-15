@@ -20,12 +20,11 @@ import com.google.gson.Gson;
 import java.util.List;
 // import javax.ejb.EJB;
 
-
 /**
  *
  * @author Admin
  */
-@WebServlet(name = "PrescriptionServlet", urlPatterns = {"/PrescriptionServlet"})
+@WebServlet(name = "PrescriptionServlet", urlPatterns = { "/PrescriptionServlet" })
 public class PrescriptionServlet extends HttpServlet {
 
     @EJB
@@ -35,10 +34,10 @@ public class PrescriptionServlet extends HttpServlet {
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -48,7 +47,7 @@ public class PrescriptionServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet PrescriptionServlet</title>");            
+            out.println("<title>Servlet PrescriptionServlet</title>");
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet PrescriptionServlet at " + request.getContextPath() + "</h1>");
@@ -57,14 +56,15 @@ public class PrescriptionServlet extends HttpServlet {
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the
+    // + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -85,6 +85,16 @@ public class PrescriptionServlet extends HttpServlet {
                 e.printStackTrace();
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "An error occurred.");
             }
+        } else if ("delete".equals(action)) {
+            try {
+                String presId = request.getParameter("prescriptionId");
+                int prescriptionId = Integer.parseInt(presId);
+                medicalSB.deletePrescription(prescriptionId);
+                response.setStatus(HttpServletResponse.SC_OK);
+            } catch (Exception e) {
+                e.printStackTrace();
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "An error occurred.");
+            }
         } else {
             processRequest(request, response);
         }
@@ -93,31 +103,55 @@ public class PrescriptionServlet extends HttpServlet {
     /**
      * Handles the HTTP <code>POST</code> method.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        String action = request.getParameter("action");
+
         try {
-            int recordId = Integer.parseInt(request.getParameter("recordId"));
-            int medicineId = Integer.parseInt(request.getParameter("medicineId"));
-            String dosage = request.getParameter("dosage");
-            int quantity = Integer.parseInt(request.getParameter("quantity"));
-            int duration = Integer.parseInt(request.getParameter("duration"));
+            if ("update".equals(action)) {
+                int prescriptionId = Integer.parseInt(request.getParameter("prescriptionId"));
+                int medicineId = Integer.parseInt(request.getParameter("medicineId"));
+                String dosage = request.getParameter("dosage");
+                int quantity = Integer.parseInt(request.getParameter("quantity"));
+                int duration = Integer.parseInt(request.getParameter("duration"));
 
-            MedicalRecords record = new MedicalRecords();
-            record.setRecordID(recordId);
+                Prescriptions prescription = medicalSB.getPrescriptionById(prescriptionId);
+                Medicines medicine = new Medicines();
+                medicine.setMedicineID(medicineId);
 
-            Medicines medicine = new Medicines();
-            medicine.setMedicineID(medicineId);
+                prescription.setMedicineID(medicine);
+                prescription.setDosage(dosage);
+                prescription.setQuantity(quantity);
+                prescription.setDuration(duration);
 
-            Prescriptions prescription = new Prescriptions(quantity, dosage, duration, record, medicine);
-            medicalSB.addPrescription(prescription);
+                medicalSB.updatePrescription(prescription);
+                response.sendRedirect("MedicalServlet?appointmentId=" + request.getParameter("appointmentId"));
+            } else {
+                System.out.println("Creating new prescription");
+                System.out.println("appointmentId" + request.getParameter("appointmentId"));
+                int recordId = Integer.parseInt(request.getParameter("recordId"));
+                int medicineId = Integer.parseInt(request.getParameter("medicineId"));
+                String dosage = request.getParameter("dosage");
+                int quantity = Integer.parseInt(request.getParameter("quantity"));
+                int duration = Integer.parseInt(request.getParameter("duration"));
 
-            response.sendRedirect("MedicalServlet?appointmentId=" + request.getParameter("appointmentId"));
+                MedicalRecords record = new MedicalRecords();
+                record.setRecordID(recordId);
+
+                Medicines medicine = new Medicines();
+                medicine.setMedicineID(medicineId);
+
+                Prescriptions prescription = new Prescriptions(quantity, dosage, duration, record, medicine);
+                medicalSB.addPrescription(prescription);
+                medicalSB.updatePrescription(prescription);
+                response.sendRedirect("MedicalServlet?appointmentId=" + request.getParameter("appointmentId"));
+            }
         } catch (Exception e) {
             e.printStackTrace();
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "An error occurred.");

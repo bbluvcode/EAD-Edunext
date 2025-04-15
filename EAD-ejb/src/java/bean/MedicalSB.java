@@ -130,12 +130,67 @@ public class MedicalSB implements MedicalSBLocal {
 
     @Override
     public void addPrescription(Prescriptions prescription) {
-        em.persist(prescription);
+        try {
+            em.getTransaction().begin();
+            if (prescription != null) {
+                em.persist(prescription);
+            } else {
+                throw new IllegalArgumentException("Prescription add is null.");
+            }
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            em.getTransaction().rollback();
+            System.err.println("Error deleting prescription add");
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    @Override
+    public void updatePrescription(Prescriptions prescription) {
+        try {
+            em.getTransaction().begin();
+            if (prescription != null) {
+                em.merge(prescription);
+            } else {
+                throw new IllegalArgumentException("Prescription update is null.");
+            }
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            em.getTransaction().rollback();
+            System.err.println("Error deleting prescription update");
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    @Override
+    public void deletePrescription(int prescriptionId) {
+        try {
+            em.getTransaction().begin();
+            Prescriptions prescription = em.find(Prescriptions.class, prescriptionId);
+            if (prescription != null) {
+                System.out.println("Deleting prescription with ID: " + prescriptionId);
+                em.remove(prescription);
+            } else {
+                throw new IllegalArgumentException("Prescription with ID " + prescriptionId + " not found.");
+            }
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            em.getTransaction().rollback();
+            System.err.println("Error deleting prescription with ID: " + prescriptionId);
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    @Override
+    public Prescriptions getPrescriptionById(int prescriptionId) {
+        return em.find(Prescriptions.class, prescriptionId);
     }
 
     @Override
     public List<Medicines> getAllMedicines() {
-        // Fetch medicines from the database (example code)
         return em.createQuery("SELECT m FROM Medicines m", Medicines.class).getResultList();
     }
 }

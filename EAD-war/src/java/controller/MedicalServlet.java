@@ -9,6 +9,7 @@ import entities.Appointments;
 import entities.MedicalRecords;
 import entities.Patients;
 import entities.Prescriptions;
+import entities.Medicines;
 import jakarta.ejb.EJB;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -36,6 +37,7 @@ public class MedicalServlet extends HttpServlet {
         if (appointmentIdStr != null) {
             int appointmentId = Integer.parseInt(appointmentIdStr);
             try {
+                // Retrieve the medical record, appointment, and patient details
                 MedicalRecords record = medicalSB.getMedicalRecordByAppointmentId(appointmentId);
                 Appointments appointment = record.getAppointmentID(); // Assuming this is mapped
                 Patients patient = appointment.getPatientID(); // Assuming this is mapped
@@ -43,12 +45,26 @@ public class MedicalServlet extends HttpServlet {
                 // Retrieve prescriptions for the medical record
                 List<Prescriptions> prescriptions = medicalSB.getPrescriptionsByRecordId(record.getRecordID());
 
+                // Retrieve the list of all medicines
+                List<Medicines> allMedicines = medicalSB.getAllMedicines();
+
+                // Filter medicines to exclude those already in prescriptions
+                List<Medicines> availableMedicines = allMedicines.stream()
+                        .filter(medicine -> prescriptions.stream()
+                                .noneMatch(prescription -> prescription.getMedicineID().getMedicineID().equals(medicine.getMedicineID())))
+                        .toList();
+
+                // Set attributes for the JSP
                 request.setAttribute("medicalRecord", record);
                 request.setAttribute("appointmentId", appointmentId);
                 request.setAttribute("patient", patient); // Pass patient details
                 request.setAttribute("prescriptions", prescriptions); // Pass prescriptions
+                request.setAttribute("medicines", availableMedicines); // Pass filtered medicines
+
+                // Forward to JSP
                 request.getRequestDispatcher("medical.jsp").forward(request, response);
             } catch (Exception e) {
+                e.printStackTrace();
                 request.setAttribute("appointmentId", appointmentId);
                 request.getRequestDispatcher("medical.jsp").forward(request, response);
             }
