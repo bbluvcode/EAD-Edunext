@@ -13,7 +13,9 @@
     <!-- Main Content -->
     <div class="container mt-5">
         <h1 class="text-center mb-4">Medical History</h1>
-        <h3 class="text-center text-secondary">Patient: ${patientName}</h3> <!-- Display patient name -->
+        <h3 class="text-center text-secondary">
+            Patient name: ${patientName}
+        </h3> <!-- Display patient name and year of birth -->
 
         <!-- Search Form -->
         <form action="MedicalHistoryServlet" method="get" class="mb-4">
