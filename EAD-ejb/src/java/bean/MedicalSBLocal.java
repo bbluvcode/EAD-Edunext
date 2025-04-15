@@ -27,4 +27,8 @@ public interface MedicalSBLocal {
     void updateDiagnosis(int recordId, String newDiagnosis);
 
     List<Prescriptions> listPrescriptions(int recordId);
+
+    List<MedicalRecords> getMedicalHistoryByPatientId(int patientId);
+
+    List<MedicalRecords> searchMedicalHistoryByPatientId(int patientId, String searchQuery);
 }

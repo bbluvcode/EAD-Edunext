@@ -1,75 +1,24 @@
 <%-- Document : medical Created on : Apr 12, 2025, 12:43:28 PM Author : Admin --%>
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-        <%@page contentType="text/html" pageEncoding="UTF-8" %>
+        <%@ page contentType="text/html" pageEncoding="UTF-8" %>
             <!DOCTYPE html>
             <html>
 
             <head>
-                <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
                 <title>Medical Record</title>
                 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
                 <link href="https://fonts.googleapis.com/css2?family=Jost:wght@500&display=swap" rel="stylesheet">
                 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
                     rel="stylesheet">
-                <style>
-                    /* Ensure the footer stays at the bottom */
-                    html,
-                    body {
-                        height: 100%;
-                        margin: 0;
-                        display: flex;
-                        flex-direction: column;
-                    }
 
-                    body {
-                        background-color: #f8f9fa;
-                        font-family: 'Jost', sans-serif;
-                    }
-
-                    .container {
-                        flex: 1;
-                        /* Pushes the footer to the bottom */
-                    }
-
-                    .navbar-transparent {
-                        background: rgba(0, 0, 0, 0.5);
-                    }
-
-                    footer {
-
-                        background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
-                        color: white;
-                        padding: 10px 0;
-                        text-align: center;
-                    }
-                </style>
             </head>
 
             <body>
-                <!-- Navbar -->
-                <nav class="navbar navbar-expand-lg navbar-dark navbar-transparent fixed-top">
-                    <div class="container">
-                        <a class="navbar-brand fw-bold" href="#">HealthSys</a>
-                        <div class="ms-auto d-flex gap-2">
-                            <!-- <a href="RegisterServlet" class="btn btn-success d-flex align-items-center gap-2">
-                                Create <i class="bi bi-plus-lg"></i>
-                            </a> -->
-                            <% Object user=session.getAttribute("user"); if (user !=null) { %>
-                                <a href="LogoutServlet" class="btn btn-outline-warning d-flex align-items-center gap-2">
-                                    Logout <i class="bi bi-box-arrow-right"></i>
-                                </a>
-                                <% } else { %>
-                                    <a href="LoginServlet"
-                                        class="btn btn-outline-light d-flex align-items-center gap-2">
-                                        Login <i class="bi bi-box-arrow-in-right"></i>
-                                    </a>
-                                    <% } %>
-                        </div>
-                    </div>
-                </nav>
+                <!-- Include Header -->
+                <jsp:include page="fragments/header.jsp" />
 
                 <!-- Main Content -->
-                <div class="container mt-5 pt-5">
+                <div class="container pt-5">
                     <h1 class="text-center mb-4">Medical Record</h1>
                     <c:choose>
                         <c:when test="${not empty medicalRecord}">
@@ -96,6 +45,11 @@
                                                 <span id="dob">${patient.dateOfBirth}</span>
                                                 (<span id="age"></span>)
                                             </p>
+                                            <!-- Button to view medical record history -->
+                                            <a href="MedicalHistoryServlet?patientId=${patient.patientID}&appointmentId=${appointmentId}"
+                                                class="btn btn-info mt-3">
+                                                <i class="bi bi-clock-history"></i> View Medical History
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
@@ -153,10 +107,8 @@
                     </div>
                 </div>
 
-                <!-- Footer -->
-                <footer>
-                    <p>&copy; 2025 Healthcare Management System. All rights reserved.</p>
-                </footer>
+                <!-- Include Footer -->
+                <jsp:include page="fragments/footer.jsp" />
 
                 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
                 <script>

@@ -86,4 +86,22 @@ public class MedicalSB implements MedicalSBLocal {
                 .setParameter("recordId", recordId)
                 .getResultList();
     }
+
+    @Override
+    public List<MedicalRecords> getMedicalHistoryByPatientId(int patientId) {
+        return em.createQuery("SELECT m FROM MedicalRecords m WHERE m.appointmentID.patientID.patientID = :patientId", MedicalRecords.class)
+                .setParameter("patientId", patientId)
+                .getResultList();
+    }
+
+    @Override
+    public List<MedicalRecords> searchMedicalHistoryByPatientId(int patientId, String searchQuery) {
+        return em.createQuery(
+                "SELECT m FROM MedicalRecords m WHERE m.appointmentID.patientID.patientID = :patientId " +
+                "AND (LOWER(m.symptoms) LIKE :searchQuery OR LOWER(m.diagnosis) LIKE :searchQuery OR CAST(m.recordID AS string) LIKE :searchQuery)",
+                MedicalRecords.class)
+                .setParameter("patientId", patientId)
+                .setParameter("searchQuery", "%" + searchQuery.toLowerCase() + "%")
+                .getResultList();
+    }
 }
