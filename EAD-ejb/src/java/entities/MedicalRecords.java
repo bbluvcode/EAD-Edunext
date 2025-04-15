@@ -35,7 +35,9 @@ import java.util.List;
     @NamedQuery(name = "MedicalRecords.findByRecordID", query = "SELECT m FROM MedicalRecords m WHERE m.recordID = :recordID"),
     @NamedQuery(name = "MedicalRecords.findBySymptoms", query = "SELECT m FROM MedicalRecords m WHERE m.symptoms = :symptoms"),
     @NamedQuery(name = "MedicalRecords.findByDiagnosis", query = "SELECT m FROM MedicalRecords m WHERE m.diagnosis = :diagnosis"),
-    @NamedQuery(name = "MedicalRecords.findByCreatedAt", query = "SELECT m FROM MedicalRecords m WHERE m.createdAt = :createdAt")})
+    @NamedQuery(name = "MedicalRecords.findByCreatedAt", query = "SELECT m FROM MedicalRecords m WHERE m.createdAt = :createdAt"),
+    @NamedQuery(name = "MedicalRecords.findOneRecord", query = "SELECT m FROM MedicalRecords m WHERE m.appointmentID.appointmentID = :appointmentID")
+})
 public class MedicalRecords implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -109,5 +111,5 @@ public class MedicalRecords implements Serializable {
     public void setAppointmentID(Appointments appointmentID) {
         this.appointmentID = appointmentID;
     }
-    
+
 }

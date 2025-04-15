@@ -35,14 +35,16 @@ public class MedicalServlet extends HttpServlet {
                 int appointmentId = Integer.parseInt(appointmentIdStr);
                 MedicalRecords record = medicalSB.getMedicalRecordByAppointmentId(appointmentId);
                 request.setAttribute("medicalRecord", record);
+                request.setAttribute("appointmentId", appointmentIdStr);
                 request.getRequestDispatcher("medical.jsp").forward(request, response);
             } catch (Exception e) {
+                request.setAttribute("appointmentId", appointmentIdStr);
                 request.getRequestDispatcher("medical.jsp").forward(request, response);
 //                e.printStackTrace();
-//                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid appointment ID.");
+//                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "An error occurred while processing your request.");
             }
         } else {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Appointment ID is required.");
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Appointment ID is required. get");
         }
     }
 
@@ -57,28 +59,20 @@ public class MedicalServlet extends HttpServlet {
                 int appointmentId = Integer.parseInt(request.getParameter("appointmentId"));
                 String symptoms = request.getParameter("symptoms");
                 String diagnosis = request.getParameter("diagnosis");
-
-                Appointments appointment = new Appointments(); // Replace with actual retrieval logic
+                Appointments appointment = new Appointments(); 
                 appointment.setAppointmentID(appointmentId);
-
                 medicalSB.createMedicalRecord(appointment, symptoms, diagnosis);
-                response.sendRedirect("MedicalServlet?appointmentId=" + appointmentId);
-
+                response.sendRedirect("DoctorServlet");
             } else if ("updateSymptoms".equals(action)) {
                 int recordId = Integer.parseInt(request.getParameter("recordId"));
                 String newSymptoms = request.getParameter("newSymptoms");
-
                 medicalSB.updateSymptoms(recordId, newSymptoms);
-                response.sendRedirect("MedicalServlet?appointmentId=" + recordId);
-
+                response.sendRedirect("DoctorServlet");
             } else if ("updateDiagnosis".equals(action)) {
                 int recordId = Integer.parseInt(request.getParameter("recordId"));
                 String newDiagnosis = request.getParameter("newDiagnosis");
-
                 medicalSB.updateDiagnosis(recordId, newDiagnosis);
-//                response.sendRedirect("MedicalServlet?appointmentId=" + request.getParameter("appointmentId"));
-                response.sendRedirect("MedicalServlet?appointmentId=" + recordId);
-
+                response.sendRedirect("DoctorServlet");
             } else {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid action.");
             }

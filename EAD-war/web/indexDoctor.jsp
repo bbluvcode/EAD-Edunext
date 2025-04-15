@@ -11,8 +11,8 @@
 
         <div class="container mt-5">
             <h2 class="mb-4 text-center">Doctors Management</h2>
-
-            <div class="d-flex justify-content-end mb-3">
+            <div class="d-flex justify-content-between  mb-3">
+                <a href="LoginServlet?action=Logout" class="btn btn-danger">Logout</a>
                 <a href="DoctorServlet?action=create" class="btn btn-success">+ Create Doctor</a>
             </div>
 

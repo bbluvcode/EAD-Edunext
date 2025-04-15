@@ -79,15 +79,16 @@
             <div class="container">
                 <a class="navbar-brand fw-bold" href="#">HealthSys</a>
                 <div class="ms-auto d-flex gap-2">
-                    <a href="RegisterServlet" class="btn btn-success d-flex align-items-center gap-2">
-                        Create <i class="bi bi-plus-lg"></i>
-                    </a>
+
 
                     <%
                         Object user = session.getAttribute("user");
                         if (user != null) {
                     %>
-                    <a href="LogoutServlet" class="btn btn-outline-warning d-flex align-items-center gap-2">
+                    <a href="AppointmentServlet?action=GetPatient" class="btn btn-success d-flex align-items-center gap-2">
+                        Create <i class="bi bi-plus-lg"></i>
+                    </a>
+                    <a href="LoginServlet?action=Logout" class="btn btn-outline-warning d-flex align-items-center gap-2">
                         Logout <i class="bi bi-box-arrow-right"></i>
                     </a>
                     <%

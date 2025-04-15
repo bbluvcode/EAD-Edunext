@@ -13,7 +13,7 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     </head>
     <body>
-        <div class="container mt-4">
+        <div class="container mt-4 w-50">
             <h1 class="text-center">Medical Record</h1>
             <!-- Start of conditional rendering -->
             <c:choose>
@@ -52,7 +52,7 @@
                 <c:otherwise>
                     <form action="MedicalServlet" method="post">
                         <input type="hidden" name="action" value="create">
-                        <input type="hidden" name="appointmentId" value="${appointment.appointmentID}">
+                        <input type="hidden" name="appointmentId" value="${appointmentId}">
                         <div class="mb-3">
                             <label for="symptoms" class="form-label">Symptoms</label>
                             <input type="text" class="form-control" id="symptoms" name="symptoms" required>
@@ -67,7 +67,7 @@
             </c:choose>
             <!-- Back to appointments list -->
             <div class="mt-4">
-                <a href="AppointmentServlet" class="btn btn-secondary">Back to Appointments</a>
+                <a href="DoctorServlet" class="btn btn-secondary">Back to Appointments</a>
             </div>
         </div>
     </body>

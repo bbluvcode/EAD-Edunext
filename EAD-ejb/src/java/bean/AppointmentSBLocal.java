@@ -43,14 +43,24 @@ public interface AppointmentSBLocal {
 
     public List<Bills> getBillsByPatient(int id);
     
+    public Bills getOneBill(int appointmentID);
+    
     public List<Medicines> getMedicines();
+    
+    public List<Prescriptions> getMedicinesByRecord(int id);
     
     public Medicines getOneMedicines(int id);
     
     public MedicalRecords getOneMedicalRecords(int id);
     
+    public int getRecordID(int appointmentID);
+    
     public List<Prescriptions> getPrescriptions();
     
     public void addPrescriptions(Prescriptions p);
+    
+    public Bills getBillDetail(int id);
+    
+    public List<Prescriptions> getPrescriptionsByApp(int id);
 
 }

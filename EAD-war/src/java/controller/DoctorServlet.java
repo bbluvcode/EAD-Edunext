@@ -5,8 +5,7 @@
 package controller;
 
 import bean.DoctorSBLocal;
-import entities.Doctors;
-import entities.Appointments;
+import entities.*;
 import jakarta.ejb.EJB;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -23,15 +22,6 @@ import java.util.*;
  */
 public class DoctorServlet extends HttpServlet {
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @EJB
     DoctorSBLocal sb;
 
@@ -40,6 +30,11 @@ public class DoctorServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
+            String reStr = request.getParameter("recordID");
+            int recordIDFromRecord = 0;
+            if (reStr != null) {
+                recordIDFromRecord = Integer.parseInt(reStr);
+            }
             String action = request.getParameter("action");
             if (null == action) {
                 HttpSession session = request.getSession(false);
@@ -77,13 +72,12 @@ public class DoctorServlet extends HttpServlet {
                 switch (action) {
                     case "detail":
                         try {
+                            request.setAttribute("recordID", recordIDFromRecord);
                             int id = Integer.parseInt(request.getParameter("id"));
                             Doctors doctor = sb.getDoctor(id); // gọi EJB để lấy thông tin bác sĩ
                             List<Appointments> appointments = sb.getAppointmentsByDoctorId(id); // lấy danh sách cuộc hẹn
-
                             request.setAttribute("doctor", doctor); // gán vào request thay vì session
-                            request.setAttribute("appointments", appointments);
-
+                            request.setAttribute("appointments", appointments);                        
                             request.getRequestDispatcher("detailDoctor.jsp").forward(request, response);
                         } catch (Exception e) {
                             e.printStackTrace();

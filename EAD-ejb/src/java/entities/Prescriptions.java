@@ -30,7 +30,16 @@ import java.io.Serializable;
     @NamedQuery(name = "Prescriptions.findByPrescriptionID", query = "SELECT p FROM Prescriptions p WHERE p.prescriptionID = :prescriptionID"),
     @NamedQuery(name = "Prescriptions.findByQuantity", query = "SELECT p FROM Prescriptions p WHERE p.quantity = :quantity"),
     @NamedQuery(name = "Prescriptions.findByDosage", query = "SELECT p FROM Prescriptions p WHERE p.dosage = :dosage"),
-    @NamedQuery(name = "Prescriptions.findByDuration", query = "SELECT p FROM Prescriptions p WHERE p.duration = :duration")})
+    @NamedQuery(
+            name = "Prescriptions.getMedicinesByRecord",
+            query = "SELECT p FROM Prescriptions p WHERE p.recordID.appointmentID.appointmentID = :id"),
+    @NamedQuery(
+            name = "Prescriptions.getPrescriptionsByApp",
+            query = "SELECT p FROM Prescriptions p WHERE p.recordID.appointmentID.appointmentID = :id"),
+    @NamedQuery(
+            name = "Prescriptions.getPrescriptionsByApp",
+            query = "SELECT p FROM Prescriptions p WHERE p.recordID.appointmentID.appointmentID = :id")
+})
 public class Prescriptions implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -64,8 +73,8 @@ public class Prescriptions implements Serializable {
         this.duration = duration;
         this.recordID = recordID;
         this.medicineID = medicineID;
-    }    
-    
+    }
+
     public Integer getPrescriptionID() {
         return prescriptionID;
     }

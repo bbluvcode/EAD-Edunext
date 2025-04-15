@@ -5,7 +5,6 @@
 package bean;
 
 import entities.*;
-import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
 import jakarta.mail.MessagingException;
 import jakarta.persistence.*;
@@ -242,11 +241,52 @@ public class AppointmentSB implements AppointmentSBLocal {
     public void addPrescriptions(Prescriptions p) {
         try {
             em.getTransaction().begin();
-            em.persist(p);        
+            em.persist(p);
+            em.flush();
+            em.refresh(p);
             em.getTransaction().commit();
         } catch (Exception e) {
             System.out.println(e.getMessage());
             em.getTransaction().rollback();
         }
+    }
+
+    @Override
+    public int getRecordID(int appointmentID) {
+        MedicalRecords mr = em.createNamedQuery("MedicalRecords.findOneRecord", MedicalRecords.class)
+                .setParameter("appointmentID", appointmentID)
+                .getSingleResult();
+        return mr.getRecordID();
+
+    }
+
+    @Override
+    public Bills getOneBill(int appointmentID) {
+        Bills bill = em.createNamedQuery("Bills.getOneBill", Bills.class)
+                .setParameter("appointmentID", appointmentID)
+                .getSingleResult();
+        if (bill != null) {
+            em.refresh(bill);
+        }
+        return bill;
+    }
+
+    @Override
+    public List<Prescriptions> getMedicinesByRecord(int id) {
+        return em.createNamedQuery("Prescriptions.getMedicinesByRecord", Prescriptions.class)
+                .setParameter("id", id)
+                .getResultList();
+    }
+
+    @Override
+    public Bills getBillDetail(int id) {
+        return em.find(Bills.class, id);
+    }
+
+    @Override
+    public List<Prescriptions> getPrescriptionsByApp(int id) {
+        return em.createNamedQuery("Prescriptions.getPrescriptionsByApp", Prescriptions.class)
+                .setParameter("id", id)
+                .getResultList();
     }
 }
