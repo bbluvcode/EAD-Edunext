@@ -110,4 +110,12 @@ public class MedicalSB implements MedicalSBLocal {
                 .setParameter("searchQuery", "%" + searchQuery.toLowerCase() + "%")
                 .getResultList();
     }
+
+    @Override
+    public String getPatientNameById(int patientId) {
+        return em.createQuery(
+                "SELECT p.fullName FROM Patients p WHERE p.patientID = :patientId", String.class)
+                .setParameter("patientId", patientId)
+                .getSingleResult();
+    }
 }

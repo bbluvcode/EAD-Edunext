@@ -38,9 +38,13 @@ public class MedicalHistoryServlet extends HttpServlet {
                     history = medicalSB.getMedicalHistoryByPatientId(patientId);
                 }
 
+                // Retrieve patient details
+                String patientName = medicalSB.getPatientNameById(patientId);
+
                 request.setAttribute("medicalHistory", history);
                 request.setAttribute("appointmentId", appointmentIdStr);
                 request.setAttribute("searchQuery", searchQuery); // Pass search query back to JSP
+                request.setAttribute("patientName", patientName); // Pass patient name to JSP
                 request.getRequestDispatcher("medicalHistory.jsp").forward(request, response);
             } catch (Exception e) {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid patient ID.");

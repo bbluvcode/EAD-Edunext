@@ -31,4 +31,6 @@ public interface MedicalSBLocal {
     List<MedicalRecords> getMedicalHistoryByPatientId(int patientId);
 
     List<MedicalRecords> searchMedicalHistoryByPatientId(int patientId, String searchQuery);
+
+    String getPatientNameById(int patientId);
 }
