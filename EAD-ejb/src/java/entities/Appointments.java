@@ -69,8 +69,8 @@ public class Appointments implements Serializable {
     @JoinColumn(name = "DoctorID", referencedColumnName = "DoctorID")
     @ManyToOne(optional = false)
     private Doctors doctorID;
+    @ManyToOne
     @JoinColumn(name = "PatientID", referencedColumnName = "PatientID")
-    @ManyToOne(optional = false)
     private Patients patientID;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "appointmentID")
     private List<MedicalRecords> medicalRecordsList;
