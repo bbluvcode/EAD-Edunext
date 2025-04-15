@@ -39,4 +39,6 @@ lib/*.jar
 "all.files.jar/jdk-17.0.12_windows-x64_bin.exe" 
 =======
 **/build/lib/
+*.exe
+
 
