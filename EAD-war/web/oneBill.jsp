@@ -11,13 +11,28 @@
         <div class="container py-4 w-50">        
             <div class="mb-4 bg-light p-3 rounded shadow-sm">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <a href="DoctorServlet" class="btn btn-danger">← Quay lại</a>
+                    <c:choose>
+                        <c:when test="${not empty sessionScope.patient}">
+                            <a href="AppointmentServlet?action=GetAppsByPatient" class="btn btn-danger">
+                                ← Quay lại
+                            </a>
+                        </c:when>
+                        <c:when test="${not empty sessionScope.doctor}">
+                            <a href="DoctorServlet" class="btn btn-danger">
+                                ← Quay lại
+                            </a>
+                        </c:when>
+                    </c:choose>                 
                     <form action="AppointmentServlet" method="post">
                         <input type="hidden" name="billId" value="${bill.billID}" />
                         <button type="submit" class="btn btn-success" name="action" value="ExportPDF">🖨️ In đơn thuốc</button>
                     </form>
                 </div>
                 <h2 class="text-center mb-4 text-primary">Đơn thuốc khám bệnh</h2>
+                <div class="row mb-3">
+                    <div class="col-6"><strong>Ngày khám: </strong> ${bill.appointmentID.formatDate()}</div>
+                    <div class="col-6"><strong>Giờ khám:</strong> ${bill.appointmentID.formatTime()}</div>
+                </div>
                 <div class="row mb-4">
                     <h5 class="text-success">👤 Thông tin bệnh nhân</h5>
                     <div class="row">
@@ -36,11 +51,7 @@
                     </div>
                 </div>
                 <h5 class="text-danger mb-3">💊 Danh sách thuốc</h5>
-                <div class="row mb-3">
-                    <div class="col-6"><strong>Ngày khám: </strong> ${bill.appointmentID.formatDate()}</div>
-                    <div class="col-6"><strong>Giờ khám:</strong> ${bill.appointmentID.formatTime()}</div>
-                </div>
-                <table class="table table-bordered text-center">
+                <table class="table table-bordered text-center mb-3">
                     <thead class="table-secondary">
                         <tr>
                             <th>STT</th>
@@ -55,15 +66,15 @@
                     <tbody>
                         <c:set var="total" value="0" />
                         <c:forEach var="detail" items="${presList}" varStatus="loop">
-                            <c:set var="itemTotal" value="${detail.quantity * detail.medicineID.price}" />
+                            <c:set var="itemTotal" value="${detail.quantity * detail.price}" />
                             <c:set var="total" value="${total + itemTotal}" />
                             <tr>
                                 <td>${loop.index + 1}</td>
-                                <td>${detail.medicineID.medicineName}</td>
+                                <td>${detail.medicineName}</td>
                                 <td>${detail.dosage}</td>
-                                <td>${detail.medicineID.unit}</td>
+                                <td>${detail.unit}</td>
                                 <td>${detail.quantity}</td>
-                                <td>${detail.medicineID.price}</td>
+                                <td>${detail.price}</td>
                                 <td>${itemTotal}</td>
                             </tr>
                         </c:forEach>
@@ -75,6 +86,9 @@
                         </tr>
                     </tfoot>
                 </table>
+                <div class="d-flex justify-content-start mb-3">
+                    <a href="AppointmentServlet?action=GetPatient&patientID=${bill.appointmentID.patientID.patientID}" class="btn btn-success">Tạo cuộc hẹn tới</a>
+                </div>
             </div>         
         </div>
     </body>

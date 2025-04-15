@@ -85,8 +85,11 @@
                         Object user = session.getAttribute("user");
                         if (user != null) {
                     %>
-                    <a href="AppointmentServlet?action=GetPatient" class="btn btn-success d-flex align-items-center gap-2">
-                        Create <i class="bi bi-plus-lg"></i>
+                    <a href="AppointmentServlet?action=GetPatient" class="btn btn-outline-success d-flex align-items-center gap-2">
+                        <i class="bi bi-plus-lg"> Create Appointment</i>
+                    </a>
+                    <a href="AppointmentServlet?action=GetAppsByPatient" class="btn btn-outline-primary d-flex align-items-center gap-2">
+                        Appointment History
                     </a>
                     <a href="LoginServlet?action=Logout" class="btn btn-outline-warning d-flex align-items-center gap-2">
                         Logout <i class="bi bi-box-arrow-right"></i>

@@ -5,6 +5,13 @@
 package controller;
 
 import bean.*;
+import com.lowagie.text.Document;
+import com.lowagie.text.Element;
+import com.lowagie.text.Font;
+import com.lowagie.text.FontFactory;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.Phrase;
+import com.lowagie.text.pdf.*;
 import entities.*;
 import jakarta.ejb.EJB;
 import jakarta.servlet.ServletContext;
@@ -12,11 +19,16 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
+import java.awt.Color;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -32,278 +44,346 @@ public class AppointmentServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            HttpSession session = request.getSession();
-            String action = request.getParameter("action");
-            if (action == null) {
-                //Danh sách lịch hẹn khám
-                request.setAttribute("appList", sb.getAppointments());
-                request.getRequestDispatcher("indexAppointment.jsp").forward(request, response);
-            } else {
-                switch (action) {
-                    //Lấy thông bệnh nhân đăng kí lịch hẹn khám      
-                    case "GetPatient":
-                        Patients abc = (Patients) session.getAttribute("patient");
-                        request.setAttribute("p", abc);
+
+        HttpSession session = request.getSession();
+        String action = request.getParameter("action");
+        if (action == null) {
+            //Danh sách lịch hẹn khám
+            request.setAttribute("appList", sb.getAppointments());
+            request.getRequestDispatcher("indexAppointment.jsp").forward(request, response);
+        } else {
+            switch (action) {
+                //Lấy thông bệnh nhân đăng kí lịch hẹn khám      
+                case "GetPatient":
+                    String patientID = request.getParameter("patientID");
+                    Patients abc = null;
+                    if (patientID != null) {
+                        abc = sb.getPatient(Integer.parseInt(patientID));
+                    } else {
+
+                        abc = (Patients) session.getAttribute("patient");
+                    }
+                    Doctors doctocLogin = (Doctors) session.getAttribute("doctor");
+                    request.setAttribute("doctorLogin", doctocLogin);
+                    request.setAttribute("p", abc);
+                    request.getRequestDispatcher("booking.jsp").forward(request, response);
+                    break;
+                //Tạo lịch hẹn khám
+                case "Booking":
+                    String selectedDate = request.getParameter("selectedDate");
+                    String selectedTime = request.getParameter("selectedTime");
+                    String notes = request.getParameter("notes");
+                    String doctorIdStr = request.getParameter("doctorId");
+                    String patientIdStr = request.getParameter("patientId");
+                    String department = request.getParameter("department");
+
+                    int patientId = Integer.parseInt(patientIdStr);
+                    Patients pb = sb.getPatient(patientId);
+
+                    if (department == null || department.isEmpty() || department.equals("")) {
+                        request.setAttribute("errDepart", "Vui lòng chọn ngành khám");
+                        request.setAttribute("p", pb);
                         request.getRequestDispatcher("booking.jsp").forward(request, response);
                         break;
-                    //Tạo lịch hẹn khám
-                    case "Booking":
-                        String selectedDate = request.getParameter("selectedDate");
-                        String selectedTime = request.getParameter("selectedTime");
-                        String notes = request.getParameter("notes");
-                        String doctorIdStr = request.getParameter("doctorId");
-                        String patientIdStr = request.getParameter("patientId");
-                        String department = request.getParameter("department");
+                    }
 
-                        int patientId = Integer.parseInt(patientIdStr);
-                        Patients pb = sb.getPatient(patientId);
-
-                        if (department == null || department.isEmpty() || department.equals("")) {
-                            request.setAttribute("errDepart", "Vui lòng chọn ngành khám");
-                            request.setAttribute("p", pb);
-                            request.getRequestDispatcher("booking.jsp").forward(request, response);
-                            break;
-                        }
-
-                        if (doctorIdStr == null || doctorIdStr.isEmpty() || doctorIdStr.equals("0")) {
-                            request.setAttribute("errDoctor", "Vui lòng chọn bác sĩ");
-                            request.setAttribute("p", pb);
-                            request.getRequestDispatcher("booking.jsp").forward(request, response);
-                            break;
-                        }
-
-                        if (selectedDate == null || selectedDate.isEmpty()) {
-                            request.setAttribute("errDate", "Vui lòng chọn ngày hẹn");
-                            request.setAttribute("p", pb);
-                            request.getRequestDispatcher("booking.jsp").forward(request, response);
-                            break;
-                        }
-
-                        if (selectedTime == null || selectedTime.isEmpty()) {
-                            request.setAttribute("errTime", "Vui lòng chọn giờ hẹn");
-                            request.setAttribute("p", pb);
-                            request.getRequestDispatcher("booking.jsp").forward(request, response);
-                            break;
-                        }
-
-                        int doctorId = Integer.parseInt(doctorIdStr);
-                        Date appointmentDate = null;
-                        try {
-                            appointmentDate = new SimpleDateFormat("yyyy-MM-dd").parse(selectedDate);
-                        } catch (ParseException ex) {
-                            Logger.getLogger(AppointmentServlet.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                        Date appointmentTime = null;
-                        try {
-                            appointmentTime = new SimpleDateFormat("HH:mm").parse(selectedTime);
-                        } catch (ParseException ex) {
-                            Logger.getLogger(AppointmentServlet.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                        Doctors db = sb.getDoctor(doctorId);
-                        Appointments appb = new Appointments(appointmentDate, appointmentTime, "Da dat lich kham", notes, db, pb);
-                        sb.booking(appb);
-                        response.sendRedirect("index.jsp");
+                    if (doctorIdStr == null || doctorIdStr.isEmpty() || doctorIdStr.equals("0")) {
+                        request.setAttribute("errDoctor", "Vui lòng chọn bác sĩ");
+                        request.setAttribute("p", pb);
+                        request.getRequestDispatcher("booking.jsp").forward(request, response);
                         break;
+                    }
 
-                    //Lấy danh sách thuốc 
-                    case "GetMedicine":
-                        int appointmentIDFromDoc = Integer.parseInt(request.getParameter("appointmentId"));
-                        request.setAttribute("p", sb.getOneMedicalRecords(sb.getRecordID(appointmentIDFromDoc)));
-                        request.setAttribute("history", sb.getMedicinesByRecord(appointmentIDFromDoc));
+                    if (selectedDate == null || selectedDate.isEmpty()) {
+                        request.setAttribute("errDate", "Vui lòng chọn ngày hẹn");
+                        request.setAttribute("p", pb);
+                        request.getRequestDispatcher("booking.jsp").forward(request, response);
+                        break;
+                    }
+
+                    if (selectedTime == null || selectedTime.isEmpty()) {
+                        request.setAttribute("errTime", "Vui lòng chọn giờ hẹn");
+                        request.setAttribute("p", pb);
+                        request.getRequestDispatcher("booking.jsp").forward(request, response);
+                        break;
+                    }
+
+                    int doctorId = Integer.parseInt(doctorIdStr);
+                    Date appointmentDate = null;
+                    try {
+                        appointmentDate = new SimpleDateFormat("yyyy-MM-dd").parse(selectedDate);
+                    } catch (ParseException ex) {
+                        Logger.getLogger(AppointmentServlet.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Date appointmentTime = null;
+                    try {
+                        appointmentTime = new SimpleDateFormat("HH:mm").parse(selectedTime);
+                    } catch (ParseException ex) {
+                        Logger.getLogger(AppointmentServlet.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Doctors db = sb.getDoctor(doctorId);
+                    Appointments appb = new Appointments(appointmentDate, appointmentTime, "Da dat lich kham", notes, db, pb);
+                    sb.booking(appb);
+
+                    Patients loggedInPatient = (Patients) session.getAttribute("patient");
+                    if (loggedInPatient != null) {
+                        response.sendRedirect("index.jsp");
+                    } else {
+                        response.sendRedirect("DoctorServlet");
+                    }
+                    break;
+
+                //Lấy danh sách thuốc 
+                case "GetMedicine":
+                    int appointmentIDFromDoc = Integer.parseInt(request.getParameter("appointmentId"));
+                    request.setAttribute("p", sb.getOneMedicalRecords(sb.getRecordID(appointmentIDFromDoc)));
+                    request.setAttribute("history", sb.getMedicinesByRecord(appointmentIDFromDoc));
+                    request.setAttribute("medicines", sb.getMedicines());
+                    request.getRequestDispatcher("createPrescription.jsp").forward(request, response);
+                    break;
+                //Tạo đơn thuốc
+                case "CreatePrescription":
+                    int recordID = Integer.parseInt(request.getParameter("recordID"));
+                    MedicalRecords re = sb.getOneMedicalRecords(recordID);
+                    String[] medicineIDs = request.getParameterValues("medicineName[]");
+                    String[] dosages = request.getParameterValues("dosage[]");
+                    String[] quantity = request.getParameterValues("quantity[]");
+                    String[] duration = request.getParameterValues("duration[]");
+
+                    if (medicineIDs == null || dosages == null || quantity == null || duration == null) {
+                        request.setAttribute("error", "Vui lòng thêm ít nhất một loại thuốc và nhập đầy đủ thông tin");
+                        request.setAttribute("p", re);
                         request.setAttribute("medicines", sb.getMedicines());
                         request.getRequestDispatcher("createPrescription.jsp").forward(request, response);
-                        break;
-                    //Tạo đơn thuốc
-                    case "CreatePrescription":
-                        int recordID = Integer.parseInt(request.getParameter("recordID"));
-                        MedicalRecords re = sb.getOneMedicalRecords(recordID);
-                        String[] medicineIDs = request.getParameterValues("medicineName[]");
-                        String[] dosages = request.getParameterValues("dosage[]");
-                        String[] quantity = request.getParameterValues("quantity[]");
-                        String[] duration = request.getParameterValues("duration[]");
+                        return;
+                    }
+                    try {
+                        boolean hasError = false;
+                        String errorMessage = "";
 
                         if (medicineIDs == null || dosages == null || quantity == null || duration == null) {
-                            request.setAttribute("error", "Vui lòng thêm ít nhất một loại thuốc và nhập đầy đủ thông tin");
+                            hasError = true;
+                            errorMessage = "Vui lòng điền đầy đủ thông tin đơn thuốc.";
+                        } else {
+                            for (int i = 0; i < medicineIDs.length; i++) {
+                                if (medicineIDs[i] == null || medicineIDs[i].isEmpty()
+                                        || dosages[i] == null || dosages[i].trim().isEmpty()
+                                        || quantity[i] == null || quantity[i].isEmpty()
+                                        || duration[i] == null || duration[i].isEmpty()) {
+                                    hasError = true;
+                                    errorMessage = "Vui lòng không để trống bất kỳ trường nào trong đơn thuốc.";
+                                    break;
+                                }
+                                try {
+                                    Integer.parseInt(quantity[i]);
+                                    Integer.parseInt(duration[i]);
+                                } catch (NumberFormatException e) {
+                                    hasError = true;
+                                    errorMessage = "Số lượng và số ngày phải là số hợp lệ.";
+                                    break;
+                                }
+                            }
+                        }
+                        if (hasError) {
+                            request.setAttribute("error", errorMessage);
+                            request.setAttribute("medicineIDs", medicineIDs);
+                            request.setAttribute("dosages", dosages);
+                            request.setAttribute("quantities", quantity);
+                            request.setAttribute("durations", duration);
                             request.setAttribute("p", re);
                             request.setAttribute("medicines", sb.getMedicines());
                             request.getRequestDispatcher("createPrescription.jsp").forward(request, response);
                             return;
                         }
-                        try {
-                            boolean hasError = false;
-                            String errorMessage = "";
-
-                            if (medicineIDs == null || dosages == null || quantity == null || duration == null) {
-                                hasError = true;
-                                errorMessage = "Vui lòng điền đầy đủ thông tin đơn thuốc.";
-                            } else {
-                                for (int i = 0; i < medicineIDs.length; i++) {
-                                    if (medicineIDs[i] == null || medicineIDs[i].isEmpty()
-                                            || dosages[i] == null || dosages[i].trim().isEmpty()
-                                            || quantity[i] == null || quantity[i].isEmpty()
-                                            || duration[i] == null || duration[i].isEmpty()) {
-                                        hasError = true;
-                                        errorMessage = "Vui lòng không để trống bất kỳ trường nào trong đơn thuốc.";
-                                        break;
-                                    }
-                                    try {
-                                        Integer.parseInt(quantity[i]);
-                                        Integer.parseInt(duration[i]);
-                                    } catch (NumberFormatException e) {
-                                        hasError = true;
-                                        errorMessage = "Số lượng và số ngày phải là số hợp lệ.";
-                                        break;
-                                    }
-                                }
-                            }
-
-                            if (hasError) {
-                                request.setAttribute("error", errorMessage);
-                                request.setAttribute("medicineIDs", medicineIDs);
-                                request.setAttribute("dosages", dosages);
-                                request.setAttribute("quantities", quantity);
-                                request.setAttribute("durations", duration);
-                                request.setAttribute("p", re);
-                                request.setAttribute("medicines", sb.getMedicines());
-                                request.getRequestDispatcher("createPrescription.jsp").forward(request, response);
-                                return;
-                            }
-
-                            for (int i = 0; i < medicineIDs.length; i++) {
-                                Medicines m = sb.getOneMedicines(Integer.parseInt(medicineIDs[i]));
-                                Prescriptions p = new Prescriptions(Integer.parseInt(quantity[i]), dosages[i], Integer.parseInt(duration[i]), re, m);
-                                sb.addPrescriptions(p);
-                            }
-
-                            response.sendRedirect("DoctorServlet");
-                            //response.sendRedirect("AppointmentServlet?action=GetBill&appointmentId=" + re.getAppointmentID().getAppointmentID());
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                            request.setAttribute("error", "Đã xảy ra lỗi trong quá trình tạo đơn thuốc.");
-                            request.getRequestDispatcher("createPrescription.jsp").forward(request, response);
+                        for (int i = 0; i < medicineIDs.length; i++) {
+                            Medicines m = sb.getOneMedicines(Integer.parseInt(medicineIDs[i]));
+                            Prescriptions p = new Prescriptions(Integer.parseInt(quantity[i]), dosages[i], Integer.parseInt(duration[i]), re, m);
+                            sb.addPrescriptions(p);
                         }
+                        Appointments app = sb.getAppointment(re.getAppointmentID().getAppointmentID());
+                        app.setStatus("Completed");
+                        sb.updateBooking(app);
+                        response.sendRedirect("DoctorServlet");
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        request.setAttribute("error", "Đã xảy ra lỗi trong quá trình tạo đơn thuốc.");
+                        request.getRequestDispatcher("createPrescription.jsp").forward(request, response);
+                    }
+                    break;
+                // Danh sách đơn thuốc
+                case "GetPrescriptionsList":
+                    request.setAttribute("pList", sb.getPrescriptions());
+                    request.getRequestDispatcher("indexPrescription.jsp").forward(request, response);
+                    break;
+                // Danh sách hóa đơn
+                case "GetBillsList":
+                    request.setAttribute("bList", sb.getBills());
+                    request.getRequestDispatcher("indexBill.jsp").forward(request, response);
+                    break;
+                // Hóa đơn
+                case "GetBill":
+                    int appointmentIDFromDocBill = Integer.parseInt(request.getParameter("appointmentId"));
+                    request.setAttribute("bill", sb.getOneBill(appointmentIDFromDocBill));
+                    request.setAttribute("presList", sb.getPrescriptionsByApp(appointmentIDFromDocBill));
+                    request.getRequestDispatcher("oneBill.jsp").forward(request, response);
+                    break;
+                case "ExportPDF":
+                    int bid = Integer.parseInt(request.getParameter("billId"));
+                    Bills bill = sb.getBillDetail(bid);
+                    List<PrescriptionDTO> presList = sb.getPrescriptionsByApp(bill.getAppointmentID().getAppointmentID());
+                    try {
+                        exportPrescriptionToPDF(bill, presList, response);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    return;
+                case "GetAppsByPatient":
+                    Patients pat = (Patients) session.getAttribute("patient");
+                    request.setAttribute("aList", sb.getAppsByPatients(pat.getPatientID()));
+                    request.setAttribute("bill", sb.getOneBill(pat.getPatientID()));
+                    request.getRequestDispatcher("appHistory.jsp").forward(request, response);
+                    break;
+                case "Cancel":
+                    int cancelID = Integer.parseInt(request.getParameter("appointmentId"));
+                    Appointments cancelApp = sb.getAppointment(cancelID);
+                    Patients cancelPat = sb.getPatient(cancelApp.getPatientID().getPatientID());
+                    
+                    Date dateApp = cancelApp.getAppointmentDate();
 
-                        break;
-                    // Danh sách đơn thuốc
-                    case "GetPrescriptionsList":
-                        request.setAttribute("pList", sb.getPrescriptions());
-                        request.getRequestDispatcher("indexPrescription.jsp").forward(request, response);
-                        break;
-                    // Danh sách hóa đơn
-                    case "GetBillsList":
-                        request.setAttribute("bList", sb.getBills());
-                        request.getRequestDispatcher("indexBill.jsp").forward(request, response);
-                        break;
-                    // Hóa đơn
-                    case "GetBill":
-                        int appointmentIDFromDocBill = Integer.parseInt(request.getParameter("appointmentId"));
-                        request.setAttribute("bill", sb.getOneBill(appointmentIDFromDocBill));
-                        request.setAttribute("presList", sb.getPrescriptionsByApp(appointmentIDFromDocBill));
-                        request.getRequestDispatcher("oneBill.jsp").forward(request, response);
-                        break;
-                    case "ExportPDF":
-                        int bid = Integer.parseInt(request.getParameter("billId"));
-                        Bills bill = sb.getBillDetail(bid);
-                        String html = generateHTMLFromBill(bill, request.getServletContext());
+                    LocalDate today = LocalDate.now();
+                    LocalDate appDate = dateApp.toInstant()
+                            .atZone(ZoneId.systemDefault())
+                            .toLocalDate();
 
-                        try {
-                            // Xuất file PDF từ HTML
-//                            String outputPath = request.getServletContext().getRealPath("/") + "bill.pdf";
-//                            OutputStream outputStream = new FileOutputStream(outputPath);
-//
-//                            ITextRenderer renderer = new ITextRenderer();
-//                            renderer.setDocumentFromString(html);
-//                            renderer.layout();
-//                            renderer.createPDF(outputStream);
-//
-//                            outputStream.close();
+                    if (appDate.isAfter(today)) {
+                        sb.cancel(cancelApp);
+                        request.setAttribute("success", "Đã hủy lịch hẹn thành công");
+                    } else {
+                        request.setAttribute("error", "Chỉ được hủy lịch hẹn trước ngày hẹn");
+                    }
 
-                            // Redirect hoặc mở file PDF
-                            response.sendRedirect("DoctorServlet");
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        break;
-                    default:
-                        throw new AssertionError();
-                }
+                    request.setAttribute("aList", sb.getAppsByPatients(cancelPat.getPatientID()));
+                    request.setAttribute("bill", sb.getOneBill(cancelPat.getPatientID()));
+                    request.getRequestDispatcher("appHistory.jsp").forward(request, response);
+                    break;
+                default:
+                    throw new AssertionError();
             }
         }
     }
 
-    private String generateHTMLFromBill(Bills bill, ServletContext context) {
-        StringBuilder html = new StringBuilder();
-        html.append("<html><head>");
-        html.append("<meta charset='UTF-8'>");
-        html.append("<link href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css' rel='stylesheet'>");
-        html.append("<style>");
-        html.append("body { font-family: 'Arial'; }");
-        html.append(".title { text-align: center; color: #0d6efd; margin-bottom: 20px; }");
-        html.append(".section-title { font-weight: bold; color: #198754; margin-top: 20px; }");
-        html.append(".row-info { display: flex; justify-content: space-between; margin-bottom: 10px; }");
-        html.append(".signature { text-align: right; margin-top: 50px; }");
-        html.append("</style>");
-        html.append("</head><body>");
-        html.append("<div class='container py-4 w-75'>");
+    private void exportPrescriptionToPDF(Bills bill, List<PrescriptionDTO> presList, HttpServletResponse response) throws IOException {
+        response.setContentType("application/pdf");
+        response.setHeader("Content-Disposition", "attachment; filename=DonThuoc_" + LocalDateTime.now().toString() + ".pdf");
 
-        // Tiêu đề
-        html.append("<h2 class='title'>ĐƠN THUỐC KHÁM BỆNH</h2>");
+        try {
+            // Load font hỗ trợ tiếng Việt
+            String fontPath = getServletContext().getRealPath("/WEB-INF/fonts/arial.ttf");
+            BaseFont bf = BaseFont.createFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            Font font = new Font(bf, 12);
+            Font boldFont = new Font(bf, 12, Font.BOLD);
+            Font titleFont = new Font(bf, 18, Font.BOLD, Color.BLUE);
 
-        // Dòng thông tin chia 2 cột
-        html.append("<div class='row'>");
-        html.append("  <div class='col-6'>");
-        html.append("    <p><strong>👤 Họ tên bệnh nhân:</strong> ").append(bill.getAppointmentID().getPatientID().getFullName()).append("</p>");
-        html.append("    <p><strong>🎂 Ngày sinh:</strong> ").append(bill.getAppointmentID().getPatientID().formatDOB()).append("</p>");
-        html.append("    <p><strong>📞 Số điện thoại:</strong> ").append(bill.getAppointmentID().getPatientID().getPhone()).append("</p>");
-        html.append("    <p><strong>🏠 Địa chỉ:</strong> ").append(bill.getAppointmentID().getPatientID().getAddress()).append("</p>");
-        html.append("  </div>");
-        html.append("  <div class='col-6'>");
-        html.append("    <p><strong>🧑‍⚕️ Bác sĩ:</strong> ").append(bill.getAppointmentID().getDoctorID().getFullName()).append("</p>");
-        html.append("    <p><strong>📚 Chuyên khoa:</strong> ").append(bill.getAppointmentID().getDoctorID().getSpecialization()).append("</p>");
-        html.append("    <p><strong>📅 Ngày khám:</strong> ").append(bill.getAppointmentID().getAppointmentDate()).append("</p>");
-        html.append("    <p><strong>🕘 Giờ khám:</strong> ").append(bill.getAppointmentID().getAppointmentTime()).append("</p>");
-        html.append("  </div>");
-        html.append("</div>");
+            Document document = new Document();
+            PdfWriter.getInstance(document, response.getOutputStream());
+            document.open();
 
-        // Danh sách thuốc
-        html.append("<h5 class='text-danger mt-4'>💊 Danh sách thuốc</h5>");
-        html.append("<table class='table table-bordered'><thead class='table-light'><tr>");
-        html.append("<th>STT</th><th>Tên thuốc</th><th>Liều dùng</th><th>Đơn vị</th><th>Số lượng</th><th>Giá</th><th>Thành tiền</th>");
-        html.append("</tr></thead><tbody>");
+            // Tiêu đề
+            Paragraph title = new Paragraph("ĐƠN THUỐC KHÁM BỆNH", titleFont);
+            title.setAlignment(Element.ALIGN_CENTER);
+            document.add(title);
+            document.add(new Paragraph(" ")); // khoảng trắng
 
-        DecimalFormat df = new DecimalFormat("#,##0.00");
-        BigDecimal total = BigDecimal.ZERO;
-        int stt = 1;
+            PdfPTable timeInfo = new PdfPTable(2);
+            timeInfo.setWidthPercentage(100);
+            timeInfo.setSpacingBefore(5f);
+            timeInfo.setSpacingAfter(10f);
+            timeInfo.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
 
-        for (Prescriptions p : bill.getAppointmentID().getMedicalRecordsList().get(0).getPrescriptionsList()) {
-            BigDecimal quantity = BigDecimal.valueOf(p.getQuantity());
-            BigDecimal price = p.getMedicineID().getPrice();
-            BigDecimal itemTotal = quantity.multiply(price);
-            total = total.add(itemTotal);
+            timeInfo.addCell(new Phrase("Ngày khám: " + bill.getAppointmentID().formatDate(), font));
+            timeInfo.addCell(new Phrase("Giờ khám: " + bill.getAppointmentID().formatTime(), font));
+            document.add(timeInfo);
 
-            html.append("<tr>");
-            html.append("<td>").append(stt++).append("</td>");
-            html.append("<td>").append(p.getMedicineID().getMedicineName()).append("</td>");
-            html.append("<td>").append(p.getDosage()).append("</td>");
-            html.append("<td>").append(p.getMedicineID().getUnit()).append("</td>");
-            html.append("<td>").append(p.getQuantity()).append("</td>");
-            html.append("<td>").append(df.format(price)).append("</td>");
-            html.append("<td>").append(df.format(itemTotal)).append("</td>");
-            html.append("</tr>");
+            // Thông tin bệnh nhân
+            document.add(new Paragraph("THÔNG TIN BỆNH NHÂN", boldFont));
+            PdfPTable patientInfo = new PdfPTable(2);
+            patientInfo.setWidthPercentage(100);
+            patientInfo.setSpacingBefore(5f);
+            patientInfo.setSpacingAfter(10f);
+            patientInfo.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
+
+            patientInfo.addCell(new Phrase("Họ tên: " + bill.getAppointmentID().getPatientID().getFullName(), font));
+            patientInfo.addCell(new Phrase("Giới tính: " + bill.getAppointmentID().getPatientID().getGender(), font));
+            patientInfo.addCell(new Phrase("Ngày sinh: " + bill.getAppointmentID().getPatientID().formatDOB(), font));
+            patientInfo.addCell(new Phrase("SĐT: " + bill.getAppointmentID().getPatientID().getPhone(), font));
+            patientInfo.addCell(new Phrase("Địa chỉ: " + bill.getAppointmentID().getPatientID().getAddress(), font));
+            patientInfo.addCell("");
+            document.add(patientInfo);
+
+            // Thông tin bác sĩ khám (chia làm 2 cột như trong file JSP)
+            document.add(new Paragraph("THÔNG TIN BÁC SĨ KHÁM", boldFont));
+            PdfPTable doctorInfo = new PdfPTable(2);
+            doctorInfo.setWidthPercentage(100);
+            doctorInfo.setSpacingBefore(5f);
+            doctorInfo.setSpacingAfter(10f);
+            doctorInfo.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
+
+            doctorInfo.addCell(new Phrase("Họ tên: " + bill.getAppointmentID().getDoctorID().getFullName(), font));
+            doctorInfo.addCell(new Phrase("Chuyên khoa: " + bill.getAppointmentID().getDoctorID().getSpecialization(), font));
+
+            document.add(doctorInfo);
+
+            // Tiêu đề bảng thuốc
+            document.add(new Paragraph("💊 DANH SÁCH THUỐC", boldFont));
+
+            // Bảng thuốc
+            PdfPTable table = new PdfPTable(7);
+            table.setWidthPercentage(100);
+            table.setWidths(new float[]{1, 3, 2, 2, 2, 2, 2});
+            table.setSpacingBefore(10);
+
+            String[] headers = {"STT", "Tên thuốc", "Liều dùng", "Đơn vị", "Số lượng", "Giá", "Thành tiền"};
+            for (String header : headers) {
+                PdfPCell cell = new PdfPCell(new Phrase(header, boldFont));
+                cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                table.addCell(cell);
+            }
+
+            int stt = 1;
+            BigDecimal total = BigDecimal.ZERO;
+            for (PrescriptionDTO detail : presList) {
+                BigDecimal itemTotal = detail.getPrice().multiply(BigDecimal.valueOf(detail.getQuantity()));
+                total = total.add(itemTotal);
+
+                PdfPCell sttCell = new PdfPCell(new Phrase(String.valueOf(stt++), font));
+                PdfPCell nameCell = new PdfPCell(new Phrase(detail.getMedicineName(), font));
+                PdfPCell dosageCell = new PdfPCell(new Phrase(detail.getDosage(), font));
+                PdfPCell unitCell = new PdfPCell(new Phrase(detail.getUnit(), font));
+                PdfPCell qtyCell = new PdfPCell(new Phrase(String.valueOf(detail.getQuantity()), font));
+                PdfPCell priceCell = new PdfPCell(new Phrase(String.format("%.2f", detail.getPrice()), font));
+                PdfPCell totalCell = new PdfPCell(new Phrase(String.format("%.2f", itemTotal), font));
+
+                PdfPCell[] row = {sttCell, nameCell, dosageCell, unitCell, qtyCell, priceCell, totalCell};
+                for (PdfPCell c : row) {
+                    c.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    table.addCell(c);
+                }
+            }
+
+            PdfPCell totalCell = new PdfPCell(new Phrase("Tổng tiền", boldFont));
+            totalCell.setColspan(6);
+            totalCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+            table.addCell(totalCell);
+
+            PdfPCell totalAmountCell = new PdfPCell(new Phrase(String.format("%.2f$", total), FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12, Color.RED)));
+            totalAmountCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            table.addCell(totalAmountCell);
+
+            document.add(table);
+            document.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        html.append("</tbody><tfoot><tr><td colspan='6' class='text-end fw-bold'>Tổng tiền</td>")
-                .append("<td class='fw-bold text-danger'>").append(df.format(total)).append(" $</td></tr></tfoot></table>");
-
-        // Chữ ký
-        html.append("<div class='signature'>");
-        html.append("<p><strong>Ngày lập: </strong>").append(java.time.LocalDate.now()).append("</p>");
-        html.append("<p><strong>Bác sĩ ký tên</strong></p>");
-        html.append("<p class='mt-5'>").append(bill.getAppointmentID().getDoctorID().getFullName()).append("</p>");
-        html.append("</div>");
-
-        html.append("</div></body></html>");
-        return html.toString();
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

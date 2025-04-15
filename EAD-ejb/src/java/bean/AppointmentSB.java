@@ -90,11 +90,16 @@ public class AppointmentSB implements AppointmentSBLocal {
     }
 
     @Override
-    public void cancel(int patientId) {
+    public void cancel(Appointments appointments) {
         try {
             em.getTransaction().begin();
-            Appointments app = getAppointment(patientId);
-            em.remove(app);
+            em.remove(appointments);
+            String emailContent = getHtmlTemplateForCanceledAppointment(appointments);
+            try {
+                mailUtil.sendEmail(appointments.getDoctorID().getEmail(), "Hủy đặt lịch khám", emailContent);
+            } catch (MessagingException e) {
+                e.printStackTrace();
+            }
             em.getTransaction().commit();
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -142,6 +147,100 @@ public class AppointmentSB implements AppointmentSBLocal {
     @Override
     public List<Bills> getBillsByPatient(int id) {
         return em.createNamedQuery("Bills.findByPatientId", Bills.class)
+                .setParameter("id", id)
+                .getResultList();
+    }
+
+    @Override
+    public List<Medicines> getMedicines() {
+        return em.createNamedQuery("Medicines.findAll", Medicines.class)
+                .getResultList();
+    }
+
+    @Override
+    public Medicines getOneMedicines(int id) {
+        return em.find(Medicines.class, id);
+    }
+
+    @Override
+    public MedicalRecords getOneMedicalRecords(int id) {
+        return em.find(MedicalRecords.class, id);
+    }
+
+    @Override
+    public List<Prescriptions> getPrescriptions() {
+        return em.createNamedQuery("Prescriptions.findAll", Prescriptions.class)
+                .getResultList();
+    }
+
+    @Override
+    public void addPrescriptions(Prescriptions p) {
+        try {
+            em.getTransaction().begin();
+            em.persist(p);
+            em.flush();
+            em.refresh(p);
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            em.getTransaction().rollback();
+        }
+    }
+
+    @Override
+    public int getRecordID(int appointmentID) {
+        MedicalRecords mr = em.createNamedQuery("MedicalRecords.findOneRecord", MedicalRecords.class)
+                .setParameter("appointmentID", appointmentID)
+                .getSingleResult();
+        return mr.getRecordID();
+
+    }
+
+    @Override
+    public Bills getOneBill(int appointmentID) {
+        Bills bill = em.createNamedQuery("Bills.getOneBill", Bills.class)
+                .setParameter("appointmentID", appointmentID)
+                .getSingleResult();
+        if (bill != null) {
+            em.refresh(bill);
+        }
+        return bill;
+    }
+
+    @Override
+    public List<Prescriptions> getMedicinesByRecord(int id) {
+        return em.createNamedQuery("Prescriptions.getMedicinesByRecord", Prescriptions.class)
+                .setParameter("id", id)
+                .getResultList();
+    }
+
+    @Override
+    public Bills getBillDetail(int id) {
+        return em.find(Bills.class, id);
+    }
+
+    @Override
+    public List<PrescriptionDTO> getPrescriptionsByApp(int id) {
+        return em.createNamedQuery("Prescriptions.getPrescriptionsByApp", PrescriptionDTO.class)
+                .setParameter("id", id)
+                .getResultList();
+    }
+
+    @Override
+    public void updateBooking(Appointments appointments) {
+        try {
+            em.getTransaction().begin();
+            em.merge(appointments);
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            em.getTransaction().rollback();
+        }
+    }
+
+    @Override
+    public List<Appointments> getAppsByPatients(int id) {
+        return em.createNamedQuery("Appointments.findByPatient", Appointments.class)
                 .setParameter("id", id)
                 .getResultList();
     }
@@ -216,77 +315,34 @@ public class AppointmentSB implements AppointmentSBLocal {
     }
 
     @Override
-    public List<Medicines> getMedicines() {
-        return em.createNamedQuery("Medicines.findAll", Medicines.class)
-                .getResultList();
-    }
-
-    @Override
-    public Medicines getOneMedicines(int id) {
-        return em.find(Medicines.class, id);
-    }
-
-    @Override
-    public MedicalRecords getOneMedicalRecords(int id) {
-        return em.find(MedicalRecords.class, id);
-    }
-
-    @Override
-    public List<Prescriptions> getPrescriptions() {
-        return em.createNamedQuery("Prescriptions.findAll", Prescriptions.class)
-                .getResultList();
-    }
-
-    @Override
-    public void addPrescriptions(Prescriptions p) {
-        try {
-            em.getTransaction().begin();
-            em.persist(p);
-            em.flush();
-            em.refresh(p);
-            em.getTransaction().commit();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            em.getTransaction().rollback();
-        }
-    }
-
-    @Override
-    public int getRecordID(int appointmentID) {
-        MedicalRecords mr = em.createNamedQuery("MedicalRecords.findOneRecord", MedicalRecords.class)
-                .setParameter("appointmentID", appointmentID)
-                .getSingleResult();
-        return mr.getRecordID();
-
-    }
-
-    @Override
-    public Bills getOneBill(int appointmentID) {
-        Bills bill = em.createNamedQuery("Bills.getOneBill", Bills.class)
-                .setParameter("appointmentID", appointmentID)
-                .getSingleResult();
-        if (bill != null) {
-            em.refresh(bill);
-        }
-        return bill;
-    }
-
-    @Override
-    public List<Prescriptions> getMedicinesByRecord(int id) {
-        return em.createNamedQuery("Prescriptions.getMedicinesByRecord", Prescriptions.class)
-                .setParameter("id", id)
-                .getResultList();
-    }
-
-    @Override
-    public Bills getBillDetail(int id) {
-        return em.find(Bills.class, id);
-    }
-
-    @Override
-    public List<Prescriptions> getPrescriptionsByApp(int id) {
-        return em.createNamedQuery("Prescriptions.getPrescriptionsByApp", Prescriptions.class)
-                .setParameter("id", id)
-                .getResultList();
+    public String getHtmlTemplateForCanceledAppointment(Appointments a) {
+        String doctorName = a.getDoctorID().getFullName();
+        String patientName = a.getPatientID().getFullName();
+        String date = a.formatDate();
+        String time = a.formatTime();
+        return "<!DOCTYPE html>"
+                + "<html>"
+                + "<head>"
+                + "<meta charset='UTF-8'>"
+                + "<style>"
+                + "body { font-family: Arial, sans-serif; background-color: #f8d7da; padding: 20px; }"
+                + ".container { background-color: #ffffff; border-radius: 10px; padding: 30px; border-left: 5px solid #dc3545; }"
+                + "h2 { color: #dc3545; }"
+                + "p { font-size: 16px; }"
+                + "</style>"
+                + "</head>"
+                + "<body>"
+                + "<div class='container'>"
+                + "<h2>Lịch hẹn đã bị hủy</h2>"
+                + "<p>Xin chào Bác sĩ <strong>" + doctorName + "</strong>,</p>"
+                + "<p>Lịch hẹn với bệnh nhân <strong>" + patientName + "</strong> đã bị hủy:</p>"
+                + "<ul>"
+                + "<li><strong>Ngày khám:</strong> " + date + "</li>"
+                + "<li><strong>Thời gian:</strong> " + time + "</li>"
+                + "</ul>"
+                + "<p>Chúng tôi sẽ thông báo nếu có thay đổi mới. Cảm ơn bác sĩ đã hiểu.</p>"
+                + "</div>"
+                + "</body>"
+                + "</html>";
     }
 }

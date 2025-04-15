@@ -148,7 +148,18 @@
                                     </div>
                                     <span class="text-center">Đặt lịch hẹn</span>
                                 </button>
-                                <a href="index.jsp" class="btn btn-danger w-25 fs-5">← Quay lại</a>
+                                <c:choose>
+                                    <c:when test="${not empty sessionScope.patient}">
+                                        <a href="index.jsp" class="btn btn-danger w-25 fs-5 d-flex justify-content-center align-items-center">
+                                            ← Quay lại
+                                        </a>
+                                    </c:when>
+                                    <c:when test="${not empty sessionScope.doctor}">
+                                        <a href="DoctorServlet" class="btn btn-danger w-25 fs-5 d-flex justify-content-center align-items-center">
+                                            ← Quay lại
+                                        </a>
+                                    </c:when>
+                                </c:choose>
                             </div>
                         </div>
                     </div>

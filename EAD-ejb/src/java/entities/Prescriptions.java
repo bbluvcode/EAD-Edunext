@@ -33,12 +33,16 @@ import java.io.Serializable;
     @NamedQuery(
             name = "Prescriptions.getMedicinesByRecord",
             query = "SELECT p FROM Prescriptions p WHERE p.recordID.appointmentID.appointmentID = :id"),
+//    @NamedQuery(
+//            name = "Prescriptions.getPrescriptionsByApp",
+//            query = "SELECT p FROM Prescriptions p WHERE p.recordID.appointmentID.appointmentID = :id"),
     @NamedQuery(
             name = "Prescriptions.getPrescriptionsByApp",
-            query = "SELECT p FROM Prescriptions p WHERE p.recordID.appointmentID.appointmentID = :id"),
-    @NamedQuery(
-            name = "Prescriptions.getPrescriptionsByApp",
-            query = "SELECT p FROM Prescriptions p WHERE p.recordID.appointmentID.appointmentID = :id")
+            query = "SELECT new entities.PrescriptionDTO( "
+            + "p.medicineID.medicineName, p.dosage, p.medicineID.unit, SUM(p.quantity), p.medicineID.price )"
+            + "FROM Prescriptions p "
+            + "WHERE p.recordID.appointmentID.appointmentID = :id "
+            + "GROUP BY p.medicineID.medicineName, p.dosage, p.medicineID.unit, p.medicineID.price")
 })
 public class Prescriptions implements Serializable {
 
