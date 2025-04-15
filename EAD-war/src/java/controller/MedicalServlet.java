@@ -8,6 +8,7 @@ import bean.MedicalSBLocal;
 import entities.Appointments;
 import entities.MedicalRecords;
 import entities.Patients;
+import entities.Prescriptions;
 import jakarta.ejb.EJB;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -16,6 +17,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  *
@@ -38,9 +40,13 @@ public class MedicalServlet extends HttpServlet {
                 Appointments appointment = record.getAppointmentID(); // Assuming this is mapped
                 Patients patient = appointment.getPatientID(); // Assuming this is mapped
 
+                // Retrieve prescriptions for the medical record
+                List<Prescriptions> prescriptions = medicalSB.getPrescriptionsByRecordId(record.getRecordID());
+
                 request.setAttribute("medicalRecord", record);
                 request.setAttribute("appointmentId", appointmentId);
                 request.setAttribute("patient", patient); // Pass patient details
+                request.setAttribute("prescriptions", prescriptions); // Pass prescriptions
                 request.getRequestDispatcher("medical.jsp").forward(request, response);
             } catch (Exception e) {
                 request.setAttribute("appointmentId", appointmentId);

@@ -6,6 +6,7 @@ package bean;
 
 import entities.Appointments;
 import entities.MedicalRecords;
+import entities.Medicines;
 import entities.Prescriptions;
 import jakarta.ejb.Local;
 
@@ -33,4 +34,9 @@ public interface MedicalSBLocal {
     List<MedicalRecords> searchMedicalHistoryByPatientId(int patientId, String searchQuery);
 
     String getPatientNameById(int patientId);
+
+    List<Prescriptions> getPrescriptionsByRecordId(int recordId);
+
+    void addPrescription(Prescriptions prescription);
+    List<Medicines> getAllMedicines();
 }

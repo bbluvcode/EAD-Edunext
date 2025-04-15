@@ -64,6 +64,76 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="row mb-4 prescription-list">
+                                <div class="col-md-12">
+                                    <div class="card shadow">
+                                        <div class="card-body">
+                                            <h5 class="card-title text-primary">Prescriptions</h5>
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>No.</th>
+                                                        <th>Medicine</th>
+                                                        <th>Dosage</th>
+                                                        <th>Quantity</th>
+                                                        <th>Duration</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <c:forEach var="prescription" items="${prescriptions}" varStatus="status">
+                                                        <tr>
+                                                            <td>${status.index + 1}</td>
+                                                            <td>${prescription.medicineID.medicineName}</td>
+                                                            <td>${prescription.dosage}</td>
+                                                            <td>${prescription.quantity}</td>
+                                                            <td>${prescription.duration}</td>
+                                                        </tr>
+                                                    </c:forEach>
+                                                </tbody>
+                                            </table>
+                                            <!-- Add Prescription Button -->
+                                            <button id="showPrescriptionFormBtn" class="btn btn-primary mt-3">
+                                                <i class="bi bi-plus-circle"></i> Add Prescription
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-4 prescription-form" id="prescriptionForm" style="display: none;">
+                                <div class="col-md-12">
+                                    <div class="card shadow">
+                                        <div class="card-body">
+                                            <h5 class="card-title text-primary">Add Prescription</h5>
+                                            <form action="PrescriptionServlet" method="post">
+                                                <input type="hidden" name="recordId" value="${medicalRecord.recordID}">
+                                                <div class="mb-3">
+                                                    <label for="medicineId" class="form-label">Medicine</label>
+                                                    <select class="form-control" id="medicineId" name="medicineId" required>
+                                                        <!-- Populate with medicines from the database -->
+                                                        <c:forEach var="medicine" items="${medicines}">
+                                                            <option value="${medicine.medicineID}">${medicine.medicineName}</option>
+                                                        </c:forEach>
+                                                    </select>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="dosage" class="form-label">Dosage</label>
+                                                    <input type="text" class="form-control" id="dosage" name="dosage" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="quantity" class="form-label">Quantity</label>
+                                                    <input type="number" class="form-control" id="quantity" name="quantity" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="duration" class="form-label">Duration (days)</label>
+                                                    <input type="number" class="form-control" id="duration" name="duration" required>
+                                                </div>
+                                                <button type="submit" class="btn btn-success">Add Prescription</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                          
                             <!-- Form to update symptoms -->
                             <form action="MedicalServlet" method="post" class="mb-3">
                                 <input type="hidden" name="action" value="updateSymptoms">
@@ -144,6 +214,36 @@
                                 dobElement.textContent = "Invalid Date"; // Handle invalid date
                                 ageElement.textContent = "";
                             }
+                        }
+                    });
+
+                    // JavaScript to toggle the visibility of the prescription form
+                    document.getElementById("showPrescriptionFormBtn").addEventListener("click", function () {
+                        const form = document.getElementById("prescriptionForm");
+                        const medicineSelect = document.getElementById("medicineId");
+
+                        // Toggle the visibility of the form
+                        if (form.style.display === "none") {
+                            form.style.display = "block";
+
+                            // Make an AJAX call to fetch medicines
+                            fetch("PrescriptionServlet?action=getMedicines")
+                                .then(response => response.json())
+                                .then(data => {
+                                    // Clear existing options
+                                    medicineSelect.innerHTML = "";
+
+                                    // Populate the select element with new options
+                                    data.forEach(medicine => {
+                                        const option = document.createElement("option");
+                                        option.value = medicine.medicineID;
+                                        option.textContent = medicine.medicineName;
+                                        medicineSelect.appendChild(option);
+                                    });
+                                })
+                                .catch(error => console.error("Error fetching medicines:", error));
+                        } else {
+                            form.style.display = "none";
                         }
                     });
                 </script>

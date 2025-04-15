@@ -6,6 +6,7 @@ package bean;
 
 import entities.Appointments;
 import entities.MedicalRecords;
+import entities.Medicines;
 import entities.Prescriptions;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
@@ -117,5 +118,24 @@ public class MedicalSB implements MedicalSBLocal {
                 "SELECT p.fullName FROM Patients p WHERE p.patientID = :patientId", String.class)
                 .setParameter("patientId", patientId)
                 .getSingleResult();
+    }
+
+    @Override
+    public List<Prescriptions> getPrescriptionsByRecordId(int recordId) {
+        return em.createQuery(
+                "SELECT p FROM Prescriptions p WHERE p.recordID.recordID = :recordId", Prescriptions.class)
+                .setParameter("recordId", recordId)
+                .getResultList();
+    }
+
+    @Override
+    public void addPrescription(Prescriptions prescription) {
+        em.persist(prescription);
+    }
+
+    @Override
+    public List<Medicines> getAllMedicines() {
+        // Fetch medicines from the database (example code)
+        return em.createQuery("SELECT m FROM Medicines m", Medicines.class).getResultList();
     }
 }
