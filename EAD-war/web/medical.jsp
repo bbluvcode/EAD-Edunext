@@ -10,7 +10,17 @@
                 <link href="https://fonts.googleapis.com/css2?family=Jost:wght@500&display=swap" rel="stylesheet">
                 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
                     rel="stylesheet">
+                <style>
+                    .patient-info-card {
+                        position: relative;
+                    }
 
+                    .btnviewmedicalhistory {
+                        position: absolute;
+                        right: 1rem;
+                        top: 0;
+                    }
+                </style>
             </head>
 
             <body>
@@ -37,7 +47,7 @@
                                 <!-- Patient Information -->
                                 <div class="col-md-6">
                                     <div class="card shadow">
-                                        <div class="card-body">
+                                        <div class="card-body patient-info-card">
                                             <h5 class="card-title text-primary">Patient Information</h5>
                                             <p><strong>Full Name:</strong> ${patient.fullName}</p>
                                             <p><strong>Gender:</strong> ${patient.gender}</p>
@@ -47,7 +57,7 @@
                                             </p>
                                             <!-- Button to view medical record history -->
                                             <a href="MedicalHistoryServlet?patientId=${patient.patientID}&appointmentId=${appointmentId}"
-                                                class="btn btn-info mt-3">
+                                                class="btn btn-info mt-3 btnviewmedicalhistory">
                                                 <i class="bi bi-clock-history"></i> View Medical History
                                             </a>
                                         </div>

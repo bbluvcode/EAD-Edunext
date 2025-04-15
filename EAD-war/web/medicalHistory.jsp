@@ -30,6 +30,7 @@
         <table class="table table-bordered table-striped">
             <thead>
                 <tr>
+                    <th>No.</th>
                     <th>Record ID</th>
                     <th>Symptoms</th>
                     <th>Diagnosis</th>
@@ -38,8 +39,9 @@
                 </tr>
             </thead>
             <tbody>
-                <c:forEach var="record" items="${medicalHistory}">
+                <c:forEach var="record" items="${medicalHistory}" varStatus="status">
                     <tr>
+                        <td>${status.index + 1}</td> <!-- Display the row number -->
                         <td>${record.recordID}</td>
                         <td>${record.symptoms}</td>
                         <td>${record.diagnosis}</td>
