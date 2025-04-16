@@ -4,8 +4,7 @@
  */
 package bean;
 
-import entities.Appointments;
-import entities.Doctors;
+import entities.*;
 import jakarta.ejb.Local;
 import java.util.List;
 
@@ -27,4 +26,9 @@ public interface DoctorSBLocal {
     public void createDoctor(Doctors doctors);
 
     public void updateDoctor(Doctors doctors);
+
+    public Prescriptions getPrescriptionsByApp(int id);
+
+    public Bills getBillsByApp(int id);
+
 }

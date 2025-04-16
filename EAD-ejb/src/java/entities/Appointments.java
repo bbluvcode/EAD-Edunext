@@ -39,7 +39,9 @@ import java.util.List;
     @NamedQuery(name = "Appointments.findByAppointmentDate", query = "SELECT a FROM Appointments a WHERE a.appointmentDate = :appointmentDate"),
     @NamedQuery(name = "Appointments.findByAppointmentTime", query = "SELECT a FROM Appointments a WHERE a.appointmentTime = :appointmentTime"),
     @NamedQuery(name = "Appointments.findByStatus", query = "SELECT a FROM Appointments a WHERE a.status = :status"),
-    @NamedQuery(name = "Appointments.findByNotes", query = "SELECT a FROM Appointments a WHERE a.notes = :notes")})
+    @NamedQuery(name = "Appointments.findByNotes", query = "SELECT a FROM Appointments a WHERE a.notes = :notes"),
+    @NamedQuery(name = "Appointments.findByPatient", query = "SELECT a FROM Appointments a WHERE a.patientID.patientID = :id")
+})
 public class Appointments implements Serializable {
 
     private static final long serialVersionUID = 1L;

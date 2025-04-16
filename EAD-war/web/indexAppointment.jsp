@@ -14,7 +14,7 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     </head>
     <body>
-        <div class="container mt-4 w-75">
+        <div class="container mt-4 w-100">
             <div class="d-flex align-items-center gap-2">
                 <div class="mb-3 me-3">
                     <a href="AppointmentServlet?action=GetPatient" class="btn btn-success">Tạo cuộc hẹn khám</a>
@@ -40,7 +40,7 @@
                         <th>Doctor Name</th>
                         <th>Status</th>
                         <th>Notes</th>                                                
-                        <th>Action</th>
+                        <th scope="col" style="width: 25%;">Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -54,9 +54,7 @@
                             <td>${e.status}</td>  
                             <td>${e.notes}</td>  
                             <td>
-                                <a href="MedicalServlet?appointmentId=${e.appointmentID}" class="btn btn-primary">Medical Record</a>
-                                <a href="AppointmentServlet?action=Cancel&id=${e.appointmentID}" class="btn btn-danger" 
-                                   onClick="return confirm('Are you sure want to Cancel Appointment?')">Cancel</a>
+                                <a href="MedicalServlet?appointmentId=${e.appointmentID}" class="btn btn-primary me-1">MedRecord</a>
                             </td>
                         </tr>
                     </c:forEach>
