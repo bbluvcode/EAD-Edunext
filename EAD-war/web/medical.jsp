@@ -30,7 +30,7 @@
                 <!-- Main Content -->
                 <div class="container pt-5">
                     <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h1 class="">Medical Record</h1>
+                        <h1 class="">Medical Recorddd</h1>
                         <div class="right-title">
                             <a href="" class="btn btn-success">
                                 Finish <i class="bi bi-bookmark-check"></i>
