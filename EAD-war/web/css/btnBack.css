@@ -1,0 +1,66 @@
+.border-el-btn {
+  color: red;
+  outline: none;
+  border: none;
+  font-size: 20px;
+  padding: 0.7em 1.5em;
+  position: relative;
+  background: none;
+  cursor: pointer;
+}
+
+.border-el-btn:active {
+  transform: scale(.98);
+  box-shadow: .1px .1px 2px red;
+}
+
+.border-el-btn span {
+  position: absolute;
+  background: red;
+  transition: .5s;
+  box-shadow: 1px 1px 20px red;
+}
+
+.border-el-btn span:nth-child(1) {
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 30%;
+}
+
+.border-el-btn:hover span:nth-child(1) {
+  height: 100%;
+}
+
+.border-el-btn span:nth-child(2) {
+  top: 0;
+  left: 0;
+  width: 15%;
+  height: 3px;
+}
+
+.border-el-btn:hover span:nth-child(2) {
+  width: 100%;
+}
+
+.border-el-btn span:nth-child(3) {
+  bottom: 0;
+  right: 0;
+  width: 3px;
+  height: 30%;
+}
+
+.border-el-btn:hover span:nth-child(3) {
+  height: 100%;
+}
+
+.border-el-btn span:nth-child(4) {
+  bottom: 0;
+  right: 0;
+  width: 15%;
+  height: 3px;
+}
+
+.border-el-btn:hover span:nth-child(4) {
+  width: 100%;
+}

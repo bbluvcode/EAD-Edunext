@@ -128,8 +128,8 @@
                                 <div class="col mb-2"><div class="time-slot">16:00</div></div>
                                 <div class="col mb-2"><div class="time-slot">16:30</div></div>
                             </div>
-                            <div class="d-flex justify-content-between">
-                                <button type="submit" name="action" value="Booking" class="mt-2">
+                            <div class="d-flex justify-content-between mt-2">
+                                <button type="submit" name="action" value="Booking">
                                     <div class="svg-wrapper-1">
                                         <div class="svg-wrapper">
                                             <svg

@@ -10,37 +10,46 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Home Page</title>
+        <title>Trang Chủ</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="css/btnBack.css">
     </head>
     <body>
         <div class="container mt-4 w-75">
             <div class="d-flex justify-content-start">
-                <a href="index.jsp" class="btn btn-danger">← Back</a>
+                <a href="index.jsp">
+                    <button class="border-el-btn">
+                        ← Quay lại
+                        <span class="b1"></span>
+                        <span class="b2"></span>
+                        <span class="b3"></span>
+                        <span class="b4"></span>
+                    </button>
+                </a>
             </div>
-            <h2 class="text-center mb-3">Appointments History</h2>
+            <h2 class="text-center mb-4">Lịch Sử Cuộc Hẹn</h2>
             <c:if test="${not empty success}">
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
                     ${success}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Đóng"></button>
                 </div>
             </c:if>
             <c:if test="${not empty error}">
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
                     ${error}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Đóng"></button>
                 </div>
             </c:if>
-            <table class="table table-bordered table-stripped align-middle text-center">
+            <table class="table table-bordered table-striped align-middle text-center">
                 <thead class="table-dark">
                     <tr>                      
-                        <th>#</th>
-                        <th>Appointment Date</th>
-                        <th>Appointment Time</th>
-                        <th>Doctor Name</th>
-                        <th>Status</th>
-                        <th>Notes</th>                                                
-                        <th>Action</th>
+                        <th>STT</th>
+                        <th>Ngày Hẹn</th>
+                        <th>Giờ Hẹn</th>
+                        <th>Bác Sĩ</th>
+                        <th>Trạng Thái</th>
+                        <th>Ghi Chú</th>                                                
+                        <th>Thao Tác</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -55,20 +64,20 @@
                             <td>
                                 <c:choose>
                                     <c:when test="${not empty e.billsList}">
-                                        <a href="AppointmentServlet?action=GetBill&appointmentId=${e.appointmentID}" class="btn btn-primary me-2">Detail</a>
-                                        <button class="btn btn-danger me-2" disabled>Cancel</button>
+                                        <a href="AppointmentServlet?action=GetBill&appointmentId=${e.appointmentID}" class="btn btn-primary me-2">Chi tiết</a>
+                                        <button class="btn btn-danger me-2" disabled>Hủy Cuộc hẹn</button>
                                     </c:when>
                                     <c:otherwise>
-                                        <button class="btn btn-primary me-2" disabled>Detail</button>
+                                        <button class="btn btn-primary me-2" disabled>Chi tiết</button>
                                         <a href="AppointmentServlet?action=Cancel&appointmentId=${e.appointmentID}" class="btn btn-danger me-2"
-                                           onclick="return confirm('Bạn có chắc chắn muốn hủy lịch hẹn này không?')"> Cancel </a>
+                                           onclick="return confirm('Bạn có chắc chắn muốn hủy lịch hẹn này không?')">Hủy Cuộc hẹn</a>
                                     </c:otherwise>
                                 </c:choose>
                             </td>
                         </tr>
                     </c:forEach>
                 </tbody>
-            </table
+            </table>
         </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     </body>

@@ -6,6 +6,7 @@
     <head>
         <title>Tạo Đơn Thuốc</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="css/btnBack.css">
         <script>
             let medicineList = [];
             window.onload = function () {
@@ -95,7 +96,15 @@
     <body class="bg-light">
         <div class="container mt-5 w-50">
             <div class="d-flex justify-content-between">
-                <a href="DoctorServlet" class="btn btn-danger">Back</a>
+                <a href="DoctorServlet">
+                    <button class="border-el-btn">
+                        ← Quay lại
+                        <span class="b1"></span>
+                        <span class="b2"></span>
+                        <span class="b3"></span>
+                        <span class="b4"></span>
+                    </button>
+                </a>
             </div>
             <h2 class="mb-3 text-primary text-center">Tạo Đơn Thuốc</h2>
             <div class="d-flex justify-content-center">
