@@ -1,7 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="entities.Doctors" %>
+<%@ page import="entities.*" %>
 <%@ page import="java.util.*" %>
-<%@ page import="entities.Appointments" %>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%
     Doctors doctor = (Doctors) request.getAttribute("doctor");
@@ -11,7 +10,7 @@
     List<Appointments> appointments = (List<Appointments>) request.getAttribute("appointments");
     if (appointments != null) {
         // Sắp xếp từ ngày gần nhất đến xa nhất
-        appointments.sort(( a2,           a1) -> a2.getAppointmentDate().compareTo(a1.getAppointmentDate()));
+        appointments.sort(( a2,   a1) -> a2.getAppointmentDate().compareTo(a1.getAppointmentDate()));
     }
     // Dữ liệu cho ChartJS
     Map<String, Integer> appointmentByDate = new LinkedHashMap<>();
@@ -38,6 +37,7 @@
         }
     }
 %>
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -59,12 +59,18 @@
                 box-shadow: 0 4px 10px rgba(0,0,0,0.2);
                 margin: auto;
             }
+            .disabled {
+                pointer-events: none;
+                opacity: 0.6;
+            }
         </style>
     </head>
     <body>
         <div class="container mt-5">
             <div class="mt-4">
-                <button class="btn btn-secondary" onclick="history.back()">← Back</button>
+                <a href="LoginServlet?action=Logout" class="btn btn-outline-danger">
+                    ← Logout <i class="bi bi-box-arrow-right"></i>
+                </a>
             </div>
             <h2 class="text-center mb-4"><%= doctor.getFullName()%> Detail</h2>
             <div class="row">
@@ -99,8 +105,6 @@
                     </div>
                 </div>
             </div>
-
-
             <!-- Chart and Table -->
             <div class="row mt-4">
                 <!-- ChartJS Column Chart -->
@@ -141,18 +145,15 @@
                                         <td><%= a.getPatientID() != null ? a.getPatientID().getFullName() : "N/A"%></td>
                                         <td><%= a.getNotes() != null ? a.getNotes() : "N/A"%></td>
                                         <td>
-                                            <form action="AppointmentServlet" method="get" class="d-inline">
-                                                <button class="btn btn-sm btn-outline-primary" name="action" value="view">Appointment</button>
-                                            </form>
-                                            <form action="MedicineServlet" method="get" class="d-inline">
-                                                <button class="btn btn-sm btn-outline-success" name="action" value="view">Medicine</button>
-                                            </form>
-                                            <form action="PrescriptionServlet" method="get" class="d-inline">
-                                                <button class="btn btn-sm btn-outline-warning" name="action" value="view">Prescription</button>
-                                            </form>
-                                            <form action="BillServlet" method="get" class="d-inline">
-                                                <button class="btn btn-sm btn-outline-danger" name="action" value="view">Bill</button>
-                                            </form>
+                                            <a href="MedicalServlet?appointmentId=<%= a.getAppointmentID()%>" class="d-inline btn btn-sm btn-outline-success me-2">
+                                                Medicine Record
+                                            </a>
+                                            <a href="AppointmentServlet?action=GetMedicine&appointmentId=<%= a.getAppointmentID()%>" class="d-inline btn-sm btn btn-outline-warning me-2">
+                                                Prescription
+                                            </a>
+                                            <a href="AppointmentServlet?action=GetBill&appointmentId=<%= a.getAppointmentID()%>" class="d-inline btn btn-sm btn-outline-danger">
+                                                Bill
+                                            </a>
                                         </td>
                                     </tr>
                                     <%  }
@@ -167,7 +168,6 @@
             </div>
         </div>
 
-        <!-- ChartJS Script -->
         <script>
             const ctx = document.getElementById('appointmentsChart').getContext('2d');
             const appointmentsChart = new Chart(ctx, {

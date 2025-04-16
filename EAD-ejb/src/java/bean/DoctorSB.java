@@ -5,7 +5,9 @@
 package bean;
 
 import entities.Appointments;
+import entities.Bills;
 import entities.Doctors;
+import entities.Prescriptions;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.*;
 import java.util.*;
@@ -72,5 +74,19 @@ public class DoctorSB implements DoctorSBLocal {
             }
             throw new RuntimeException("Update doctor failed: " + e.getMessage(), e);
         }
+    }
+
+    @Override
+    public Prescriptions getPrescriptionsByApp(int id) {
+        return em.createNamedQuery("Prescriptions.getPrescriptionsByApp", Prescriptions.class)
+                .setParameter("id", id)
+                .getSingleResult();
+    }
+
+    @Override
+    public Bills getBillsByApp(int id) {
+        return em.createNamedQuery("Bills.getBillssByApp", Bills.class)
+                .setParameter("id", id)
+                .getSingleResult();
     }
 }

@@ -40,7 +40,23 @@ import java.util.Date;
     @NamedQuery(
             name = "Bills.findByPatientId",
             query = "SELECT b FROM Bills b WHERE b.appointmentID.patientID.patientID = :id"
-    )
+    ),
+//    @NamedQuery(
+//            name = "Bills.getOneBill",
+//            query = "SELECT DISTINCT b FROM Bills b "
+//            + "JOIN FETCH b.appointmentID a "
+//            + "JOIN FETCH a.medicalRecordsList mr "
+//            + "JOIN FETCH mr.prescriptionsList p "
+//            + "JOIN FETCH p.medicineID m "
+//            + "WHERE a.appointmentID = :appointmentID"
+//    ),
+    @NamedQuery(
+            name = "Bills.getOneBill",
+            query = "SELECT b FROM Bills b WHERE b.appointmentID.appointmentID = :appointmentID"
+    ),
+    @NamedQuery(
+            name = "Bills.getBillsByApp",
+            query = "SELECT p FROM Bills p WHERE p.appointmentID.appointmentID = :id")
 })
 public class Bills implements Serializable {
 

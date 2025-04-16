@@ -22,6 +22,8 @@ public interface AppointmentSBLocal {
     public List<Doctors> getDoctorsBySpecialization(String specialization);
 
     public List<Appointments> getAppointments();
+    
+    public List<Appointments> getAppsByPatients(int id);
 
     public List<Appointments> getAppointmentsByDoctor(int doctorId);
 
@@ -32,25 +34,39 @@ public interface AppointmentSBLocal {
     public Appointments getAppointment(int id);
 
     public void booking(Appointments appointments);
+    
+    public void updateBooking(Appointments appointments);
 
-    public void cancel(int patientId);
+    public void cancel(Appointments appointments);
 
     public String getHtmlTemplateForDoctor(Appointments a);
 
     public String getHtmlTemplateForPatient(Appointments a);
+    
+    public String getHtmlTemplateForCanceledAppointment(Appointments a);
 
     public List<Bills> getBills();
 
     public List<Bills> getBillsByPatient(int id);
     
+    public Bills getOneBill(int appointmentID);
+    
     public List<Medicines> getMedicines();
+    
+    public List<Prescriptions> getMedicinesByRecord(int id);
     
     public Medicines getOneMedicines(int id);
     
     public MedicalRecords getOneMedicalRecords(int id);
     
+    public int getRecordID(int appointmentID);
+    
     public List<Prescriptions> getPrescriptions();
     
     public void addPrescriptions(Prescriptions p);
+    
+    public Bills getBillDetail(int id);
+    
+    public List<PrescriptionDTO> getPrescriptionsByApp(int id);
 
 }

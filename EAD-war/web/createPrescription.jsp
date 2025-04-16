@@ -6,6 +6,7 @@
     <head>
         <title>Tạo Đơn Thuốc</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="css/btnBack.css">
         <script>
             let medicineList = [];
             window.onload = function () {
@@ -94,7 +95,18 @@
     </head>
     <body class="bg-light">
         <div class="container mt-5 w-50">
-            <h2 class="mb-4 text-primary text-center">Tạo Đơn Thuốc</h2>
+            <div class="d-flex justify-content-between">
+                <a href="DoctorServlet">
+                    <button class="border-el-btn">
+                        ← Quay lại
+                        <span class="b1"></span>
+                        <span class="b2"></span>
+                        <span class="b3"></span>
+                        <span class="b4"></span>
+                    </button>
+                </a>
+            </div>
+            <h2 class="mb-3 text-primary text-center">Tạo Đơn Thuốc</h2>
             <div class="d-flex justify-content-center">
                 <table class="table table-bordered w-75">
                     <tbody>
@@ -117,11 +129,35 @@
                     </tbody>
                 </table>
             </div>
+            <c:if test="${not empty history}">
+                <h4 class="text-center text-primary">Lịch sử thuốc</h4>
+                <table class="table table-bordered table-striped align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th scope="col" style="width: 35%;">Tên thuốc</th>
+                            <th scope="col" style="width: 25%;">Liều lượng</th>
+                            <th scope="col" style="width: 15%;">Số lượng</th>
+                            <th scope="col" style="width: 15%;">Số ngày</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <c:forEach var="med" items="${history}">
+                            <tr>
+                                <td>${med.medicineID.medicineName}</td>
+                                <td>${med.dosage}</td>
+                                <td>${med.quantity}</td>
+                                <td>${med.duration}</td>
+                            </tr>
+                        </c:forEach>
+                    </tbody>
+                </table>
+            </c:if>
             <c:if test="${not empty error}">
                 <p class="text-center text-danger">${error}</p>
             </c:if>
             <form action="AppointmentServlet" method="post">
                 <input type="hidden" name="recordID" value="${p.recordID}" />
+                <h4 class="text-center text-primary">Thêm thuốc</h4>
                 <table class="table table-bordered table-striped align-middle">
                     <thead class="table-dark">
                         <tr>

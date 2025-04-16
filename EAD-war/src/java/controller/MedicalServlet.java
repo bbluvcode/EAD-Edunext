@@ -7,9 +7,6 @@ package controller;
 import bean.MedicalSBLocal;
 import entities.Appointments;
 import entities.MedicalRecords;
-import entities.Patients;
-import entities.Prescriptions;
-import entities.Medicines;
 import jakarta.ejb.EJB;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -18,7 +15,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.util.List;
 
 /**
  *
@@ -35,41 +31,20 @@ public class MedicalServlet extends HttpServlet {
             throws ServletException, IOException {
         String appointmentIdStr = request.getParameter("appointmentId");
         if (appointmentIdStr != null) {
-            int appointmentId = Integer.parseInt(appointmentIdStr);
             try {
-                // Retrieve the medical record, appointment, and patient details
+                int appointmentId = Integer.parseInt(appointmentIdStr);
                 MedicalRecords record = medicalSB.getMedicalRecordByAppointmentId(appointmentId);
-                Appointments appointment = record.getAppointmentID(); // Assuming this is mapped
-                Patients patient = appointment.getPatientID(); // Assuming this is mapped
-
-                // Retrieve prescriptions for the medical record
-                List<Prescriptions> prescriptions = medicalSB.getPrescriptionsByRecordId(record.getRecordID());
-
-                // Retrieve the list of all medicines
-                List<Medicines> allMedicines = medicalSB.getAllMedicines();
-
-                // Filter medicines to exclude those already in prescriptions
-                List<Medicines> availableMedicines = allMedicines.stream()
-                        .filter(medicine -> prescriptions.stream()
-                                .noneMatch(prescription -> prescription.getMedicineID().getMedicineID().equals(medicine.getMedicineID())))
-                        .toList();
-
-                // Set attributes for the JSP
                 request.setAttribute("medicalRecord", record);
-                request.setAttribute("appointmentId", appointmentId);
-                request.setAttribute("patient", patient); // Pass patient details
-                request.setAttribute("prescriptions", prescriptions); // Pass prescriptions
-                request.setAttribute("medicines", availableMedicines); // Pass filtered medicines
-
-                // Forward to JSP
+                request.setAttribute("appointmentId", appointmentIdStr);
                 request.getRequestDispatcher("medical.jsp").forward(request, response);
             } catch (Exception e) {
-                e.printStackTrace();
-                request.setAttribute("appointmentId", appointmentId);
+                request.setAttribute("appointmentId", appointmentIdStr);
                 request.getRequestDispatcher("medical.jsp").forward(request, response);
+//                e.printStackTrace();
+//                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "An error occurred while processing your request.");
             }
         } else {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Appointment ID is required.");
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Appointment ID is required. get");
         }
     }
 
@@ -80,30 +55,24 @@ public class MedicalServlet extends HttpServlet {
 
         try {
             if ("create".equals(action)) {
+                System.out.println("Create servlet: Hello Binh");
                 int appointmentId = Integer.parseInt(request.getParameter("appointmentId"));
-
                 String symptoms = request.getParameter("symptoms");
                 String diagnosis = request.getParameter("diagnosis");
-                Appointments appointment = new Appointments(); // Replace with actual retrieval logic
+                Appointments appointment = new Appointments(); 
                 appointment.setAppointmentID(appointmentId);
-
                 medicalSB.createMedicalRecord(appointment, symptoms, diagnosis);
-                response.sendRedirect("MedicalServlet?appointmentId=" + appointmentId);
-
+                response.sendRedirect("DoctorServlet");
             } else if ("updateSymptoms".equals(action)) {
                 int recordId = Integer.parseInt(request.getParameter("recordId"));
                 String newSymptoms = request.getParameter("newSymptoms");
-
                 medicalSB.updateSymptoms(recordId, newSymptoms);
-                response.sendRedirect("MedicalServlet?appointmentId=" + request.getParameter("appointmentId"));
-
+                response.sendRedirect("DoctorServlet");
             } else if ("updateDiagnosis".equals(action)) {
                 int recordId = Integer.parseInt(request.getParameter("recordId"));
                 String newDiagnosis = request.getParameter("newDiagnosis");
-
                 medicalSB.updateDiagnosis(recordId, newDiagnosis);
-                response.sendRedirect("MedicalServlet?appointmentId=" + request.getParameter("appointmentId"));
-
+                response.sendRedirect("DoctorServlet");
             } else {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid action.");
             }
