@@ -1,29 +1,43 @@
-<%-- 
-    Document   : medical
-    Created on : Apr 12, 2025, 12:43:28 PM
-    Author     : Admin
---%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Medical Record</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    </head>
-    <body>
-        <div class="container mt-4 w-50">
-            <h1 class="text-center">Medical Record</h1>
-            <!-- Start of conditional rendering -->
-            <c:choose>
-                <c:when test="${not empty medicalRecord}">
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <h5 class="card-title">Medical Record Details</h5>
-                            <p><strong>Symptoms:</strong> ${medicalRecord.symptoms}</p>
-                            <p><strong>Diagnosis:</strong> ${medicalRecord.diagnosis}</p>
-                            <p><strong>Created At:</strong> ${medicalRecord.createdAt}</p>
+<%-- Document : medical Created on : Apr 12, 2025, 12:43:28 PM Author : Admin --%>
+    <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+        <%@ page contentType="text/html" pageEncoding="UTF-8" %>
+            <!DOCTYPE html>
+            <html>
+
+            <head>
+                <title>Medical Record</title>
+                <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+                <link href="https://fonts.googleapis.com/css2?family=Jost:wght@500&display=swap" rel="stylesheet">
+                <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+                    rel="stylesheet">
+                <style>
+                    .patient-info-card {
+                        position: relative;
+                    }
+
+                    .btnviewmedicalhistory {
+                        position: absolute;
+                        right: 1rem;
+                        top: 0;
+                    }
+                </style>
+            </head>
+
+            <body>
+                <!-- Include Header -->
+                <jsp:include page="fragments/header.jsp" />
+
+                <!-- Main Content -->
+                <div class="container pt-5">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h1 class="">Medical Recorddd</h1>
+                        <div class="right-title">
+                            <a href="" class="btn btn-success">
+                                Finish <i class="bi bi-bookmark-check"></i>
+                            </a>
+                            <a href="AppointmentServlet" class="btn btn-secondary">
+                                Back <i class="bi bi-arrow-right"></i>
+                            </a>
                         </div>
                     </div>
                     <!-- Form to update symptoms -->
