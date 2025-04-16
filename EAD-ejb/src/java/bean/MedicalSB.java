@@ -6,6 +6,7 @@ package bean;
 
 import entities.Appointments;
 import entities.MedicalRecords;
+import entities.Medicines;
 import entities.Prescriptions;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
@@ -85,5 +86,45 @@ public class MedicalSB implements MedicalSBLocal {
         return em.createQuery("SELECT p FROM Prescriptions p WHERE p.medicalRecord.recordID = :recordId", Prescriptions.class)
                 .setParameter("recordId", recordId)
                 .getResultList();
+    }
+
+    @Override
+    public Prescriptions getPrescriptionById(int prescriptionId) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void addPrescription(Prescriptions prescription) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void updatePrescription(Prescriptions prescription) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void deletePrescription(int prescriptionID) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public List<Medicines> getAllMedicines() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public String getPatientNameById(int patientId) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public List<MedicalRecords> getMedicalHistoryByPatientId(int patientId) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public List<MedicalRecords> searchMedicalHistoryByPatientId(int patientId, String search) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }
